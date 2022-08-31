@@ -21,7 +21,7 @@ const payload100kFile = "test/payload-100K.txt"
 
 // Run test with using echo
 func main() {
-	count := 1000
+	count := 10000
 	payloadHello := "Hello world"
 	// echoclient.InvokeUpperDirect(text, count)
 	payload1k, err := ioutil.ReadFile(payload1kFile)
