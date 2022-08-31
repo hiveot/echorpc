@@ -26,6 +26,7 @@ func (adapter *EchoServiceCapnpAdapter) Echo(
 	echoText, err := adapter.svc.Echo(text)
 	res, _ := call.AllocResults()
 	res.SetEchoText(echoText)
+	call.Ack()
 	return err
 }
 
@@ -35,6 +36,7 @@ func (adapter *EchoServiceCapnpAdapter) Reverse(
 	revText, err := adapter.svc.Reverse(text)
 	res, _ := call.AllocResults()
 	res.SetReverseText(revText)
+	call.Ack()
 	return err
 }
 
@@ -44,6 +46,7 @@ func (adapter *EchoServiceCapnpAdapter) Upper(
 	upText, err := adapter.svc.Upper(text)
 	res, _ := call.AllocResults()
 	res.SetUpperText(upText)
+	call.Ack()
 	return err
 }
 
