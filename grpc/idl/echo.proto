@@ -1,0 +1,24 @@
+// Protocol Buffers definition for the echo service API
+syntax = "proto3";
+package echo;
+import "google/protobuf/empty.proto";
+option go_package = "github.com/wostzone/echo/go/echo";
+
+message TextParam {
+  string text = 1;
+}
+
+// API of the echo service
+service EchoService {
+  // Return an copy of the text
+  rpc Echo(TextParam) returns (TextParam);
+
+  // Return the upper case converted text
+  rpc Upper(TextParam) returns (TextParam);
+
+  // Return the reversed text
+  rpc Reverse(TextParam) returns (TextParam);
+
+  // Stop the service
+  rpc Stop(google.protobuf.Empty) returns (TextParam);
+}
