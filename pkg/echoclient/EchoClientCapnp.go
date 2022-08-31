@@ -8,13 +8,14 @@ import (
 	"time"
 
 	"capnproto.org/go/capnp/v3/rpc"
+
 	cb "github.com/hiveot/echorpc/capnp/go"
 )
 
-// Invoke the service using capnp rpc
-func InvokeUpperCapnp(address string, isUDS bool, text string, count int) {
+// InvokeEchoCapnp Invoke the service using capnp rpc
+func InvokeEchoCapnp(address string, isUDS bool, text string, count int) {
 	// Set up a connection to the server. Max 200 second test run
-	// fmt.Println("Invoking upper over capnp")
+	// fmt.Println("Invoking echo over capnp")
 
 	// create a net connection with context and timeout
 	// a socket must have been created by the service
@@ -37,24 +38,24 @@ func InvokeUpperCapnp(address string, isUDS bool, text string, count int) {
 	t1 := time.Now()
 	for i := 0; i < count; i++ {
 
-		// create the client capability (eg message)
-		resp, release := echoClient.Upper(ctx,
-			func(params cb.EchoServiceCap_upper_Params) error {
+		// create the client capability (eg request instance)
+		resp, release := echoClient.Echo(ctx,
+			func(params cb.EchoServiceCap_echo_Params) error {
 				err = params.SetText(text)
 				return err
 			})
-
+		// invoke the request by asking for a result
 		result, err := resp.Struct()
 		if err != nil {
 			log.Fatalf("error getting response struct: %v", err)
 		}
-		upperText, err := result.UpperText()
+		echoText, err := result.EchoText()
 		if err != nil {
-			log.Fatalf("error getting upper result text: %s", err)
+			log.Fatalf("error getting echo result text: %s", err)
 		}
-		_ = upperText
+		_ = echoText
 		release()
-		// fmt.Println("Response:", upperText)
+		// fmt.Println("Response:", echoText)
 	}
 	d1 := time.Since(t1)
 	// round result

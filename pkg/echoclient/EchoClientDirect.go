@@ -8,16 +8,16 @@ import (
 	"github.com/hiveot/echorpc/pkg/echoservice"
 )
 
-// Invoke the upper service directly
-func InvokeUpperDirect(text string, count int) {
-	fmt.Println("Invoking upper directly")
+// Invoke the echo service directly
+func InvokeEchoDirect(text string, count int) {
+	fmt.Println("Invoking echo directly")
 
 	client := echoservice.NewEchoService()
 	t1 := time.Now()
 	for i := 0; i < count; i++ {
-		response, err := client.Upper(text)
+		response, err := client.Echo(text)
 		if err != nil {
-			log.Fatalf("error upper response: %s", err)
+			log.Fatalf("error echo response: %s", err)
 		}
 		_ = response
 

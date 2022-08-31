@@ -6,15 +6,16 @@ import (
 	"log"
 	"time"
 
-	pb "github.com/hiveot/echorpc/grpc/go"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+
+	pb "github.com/hiveot/echorpc/grpc/go"
 )
 
-// Invoke the upper service using grpc
-func InvokeUpperGrpc(address string, isUDS bool, text string, count int) {
+// InvokeEchoGrpc Invokes the echo service using grpc
+func InvokeEchoGrpc(address string, isUDS bool, text string, count int) {
 	// Set up a connection to the server. Max 200 second test run
-	// fmt.Println("Invoking upper over grpc")
+	// fmt.Println("Invoking echo over grpc")
 	cred := insecure.NewCredentials()
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*200)
@@ -32,9 +33,9 @@ func InvokeUpperGrpc(address string, isUDS bool, text string, count int) {
 	client := pb.NewEchoServiceClient(conn)
 	t1 := time.Now()
 	for i := 0; i < count; i++ {
-		response, err := client.Upper(ctx, &pb.TextParam{Text: text})
+		response, err := client.Echo(ctx, &pb.TextParam{Text: text})
 		if err != nil {
-			log.Fatalf("error upper response: %s", err)
+			log.Fatalf("error echo response: %s", err)
 		}
 		_ = response
 

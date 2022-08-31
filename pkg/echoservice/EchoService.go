@@ -14,7 +14,7 @@ func (service *EchoService) Echo(text string) (string, error) {
 	return text, nil
 }
 
-// Convert the text to upper case
+// Upper converts the text to upper case
 func (service *EchoService) Upper(text string) (string, error) {
 	upper := strings.ToUpper(text)
 	return upper, nil

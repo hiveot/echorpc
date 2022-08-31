@@ -47,37 +47,37 @@ func main() {
 
 	fmt.Println("--- test with Hello World payload ---")
 	// compare GRPC and Capnproto using unix domain sockets
-	echoclient.InvokeUpperGrpc(socketAddrGrpc, true, payloadHello, count)
-	echoclient.InvokeUpperCapnp(socketAddrCapnp, true, payloadHello, count)
+	echoclient.InvokeEchoGrpc(socketAddrGrpc, true, payloadHello, count)
+	echoclient.InvokeEchoCapnp(socketAddrCapnp, true, payloadHello, count)
 
 	// compare GRPC and Capnproto using tcp sockets
-	echoclient.InvokeUpperGrpc(portGrpc, false, payloadHello, count)
-	echoclient.InvokeUpperCapnp(portCapnp, false, payloadHello, count)
+	echoclient.InvokeEchoGrpc(portGrpc, false, payloadHello, count)
+	echoclient.InvokeEchoCapnp(portCapnp, false, payloadHello, count)
 
 	fmt.Println("--- test with 1K payload ---")
 	// compare GRPC and Capnproto using unix domain sockets
-	echoclient.InvokeUpperGrpc(socketAddrGrpc, true, string(payload1k), count)
-	echoclient.InvokeUpperCapnp(socketAddrCapnp, true, string(payload1k), count)
+	echoclient.InvokeEchoGrpc(socketAddrGrpc, true, string(payload1k), count)
+	echoclient.InvokeEchoCapnp(socketAddrCapnp, true, string(payload1k), count)
 
 	// compare GRPC and Capnproto using tcp sockets
-	echoclient.InvokeUpperGrpc(portGrpc, false, string(payload1k), count)
-	echoclient.InvokeUpperCapnp(portCapnp, false, string(payload1k), count)
+	echoclient.InvokeEchoGrpc(portGrpc, false, string(payload1k), count)
+	echoclient.InvokeEchoCapnp(portCapnp, false, string(payload1k), count)
 
 	fmt.Println("--- test with 10K payload ---")
 	// compare GRPC and Capnproto using unix domain sockets
-	echoclient.InvokeUpperGrpc(socketAddrGrpc, true, string(payload10k), count)
-	echoclient.InvokeUpperCapnp(socketAddrCapnp, true, string(payload10k), count)
+	echoclient.InvokeEchoGrpc(socketAddrGrpc, true, string(payload10k), count)
+	echoclient.InvokeEchoCapnp(socketAddrCapnp, true, string(payload10k), count)
 
 	// compare GRPC and Capnproto using tcp sockets
-	echoclient.InvokeUpperGrpc(portGrpc, false, string(payload10k), count)
-	echoclient.InvokeUpperCapnp(portCapnp, false, string(payload10k), count)
+	echoclient.InvokeEchoGrpc(portGrpc, false, string(payload10k), count)
+	echoclient.InvokeEchoCapnp(portCapnp, false, string(payload10k), count)
 
 	fmt.Println("--- test with 100K payload ---")
 	// compare GRPC and Capnproto using unix domain sockets
-	echoclient.InvokeUpperGrpc(socketAddrGrpc, true, string(payload100k), count)
-	echoclient.InvokeUpperCapnp(socketAddrCapnp, true, string(payload100k), count)
+	echoclient.InvokeEchoGrpc(socketAddrGrpc, true, string(payload100k), count)
+	echoclient.InvokeEchoCapnp(socketAddrCapnp, true, string(payload100k), count)
 
 	// compare GRPC and Capnproto using tcp sockets
-	echoclient.InvokeUpperGrpc(portGrpc, false, string(payload100k), count)
-	echoclient.InvokeUpperCapnp(portCapnp, false, string(payload100k), count)
+	echoclient.InvokeEchoGrpc(portGrpc, false, string(payload100k), count)
+	echoclient.InvokeEchoCapnp(portCapnp, false, string(payload100k), count)
 }

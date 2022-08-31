@@ -8,8 +8,9 @@ import (
 	// use v3. By default it pulls in v2 (zombiezen.com/go/capnproto2)
 	capnp "capnproto.org/go/capnp/v3"
 	"capnproto.org/go/capnp/v3/rpc"
-	echocap "github.com/hiveot/echorpc/capnp/go"
 	"github.com/sirupsen/logrus"
+
+	echocap "github.com/hiveot/echorpc/capnp/go"
 )
 
 // cap'n'proto adapter for echo service
@@ -19,34 +20,34 @@ type EchoServiceCapnpAdapter struct {
 	svc *EchoService
 }
 
-// The adapter provides the capnp parameters defined
 func (adapter *EchoServiceCapnpAdapter) Echo(
 	_ context.Context, call echocap.EchoServiceCap_echo) error {
+	// Ack is optional for simple functions like these.
+	call.Ack()
 	text, _ := call.Args().Text()
 	echoText, err := adapter.svc.Echo(text)
 	res, _ := call.AllocResults()
 	res.SetEchoText(echoText)
-	call.Ack()
 	return err
 }
 
 func (adapter *EchoServiceCapnpAdapter) Reverse(
 	_ context.Context, call echocap.EchoServiceCap_reverse) error {
+	call.Ack()
 	text, _ := call.Args().Text()
 	revText, err := adapter.svc.Reverse(text)
 	res, _ := call.AllocResults()
 	res.SetReverseText(revText)
-	call.Ack()
 	return err
 }
 
 func (adapter *EchoServiceCapnpAdapter) Upper(
 	_ context.Context, call echocap.EchoServiceCap_upper) error {
+	call.Ack()
 	text, _ := call.Args().Text()
 	upText, err := adapter.svc.Upper(text)
 	res, _ := call.AllocResults()
 	res.SetUpperText(upText)
-	call.Ack()
 	return err
 }
 
