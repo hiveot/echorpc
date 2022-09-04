@@ -10,54 +10,59 @@ To run the test, run make testgrpc and make testcapnp
 
 
 # Performance Comparisons
+Microbenchmark on an i5-4570S CPU @ 2.90GHz
 
-## 2022-09-04- added http and a second call to retrieve stats
+## 2022-09-04- added http-1.1 and a second call to retrieve stats
 
-Added a get stats method that returns the latest echo and nr of calls. Each call below is therefore two calls, one to post echo and another too retrieve stats.
-Unexpectedly, http is fastest for small payloads. 
+Added a get stats method that returns the latest echo and nr of calls. Each call below is therefore two calls, one to post echo and another to retrieve stats.
+
+Unexpectedly, http (-1.1, no tls) is significantly faster for small payloads. The RPC's seem to have more overhead in invoking the method compared to marshalling the payload.
+
 
 ```
 --- test with Hello World payload ---
 Invoking echo directly
-1000 calls using direct call: 2 microsec
-1000 calls using http  on /tmp/echoservice-http.socket: 110 millisec
-1000 calls using gRPC  on unix:///tmp/echoservice-grpc.socket: 150 millisec
-1000 calls using Capnp on /tmp/echoservice-capnp.socket: 190 millisec
-1000 calls using http  on :8990: 180 millisec
+Invoking echo directly
+1000 calls using direct call: 5 microsec
+1000 calls using http  on /tmp/echoservice-http.socket: 160 millisec
+1000 calls using gRPC  on unix:///tmp/echoservice-grpc.socket: 180 millisec
+1000 calls using Capnp on /tmp/echoservice-capnp.socket: 180 millisec
+1000 calls using http  on :8990: 170 millisec
 1000 calls using gRPC  on :8991: 220 millisec
-1000 calls using Capnp on :8992: 280 millisec
+1000 calls using Capnp on :8992: 250 millisec
 --- test with 1K payload ---
 Invoking echo directly
-1000 calls using direct call: 2 microsec
-1000 calls using http  on /tmp/echoservice-http.socket: 190 millisec
-1000 calls using gRPC  on unix:///tmp/echoservice-grpc.socket: 190 millisec
-1000 calls using Capnp on /tmp/echoservice-capnp.socket: 210 millisec
-1000 calls using http  on :8990: 200 millisec
-1000 calls using gRPC  on :8991: 230 millisec
-1000 calls using Capnp on :8992: 320 millisec
+1000 calls using direct call: 1 microsec
+1000 calls using http  on /tmp/echoservice-http.socket: 180 millisec
+1000 calls using gRPC  on unix:///tmp/echoservice-grpc.socket: 170 millisec
+1000 calls using Capnp on /tmp/echoservice-capnp.socket: 190 millisec
+1000 calls using http  on :8990: 220 millisec
+1000 calls using gRPC  on :8991: 180 millisec
+1000 calls using Capnp on :8992: 270 millisec
 --- test with 10K payload ---
 Invoking echo directly
 1000 calls using direct call: 2 microsec
-1000 calls using http  on /tmp/echoservice-http.socket: 570 millisec
+1000 calls using http  on /tmp/echoservice-http.socket: 670 millisec
 1000 calls using gRPC  on unix:///tmp/echoservice-grpc.socket: 250 millisec
-1000 calls using Capnp on /tmp/echoservice-capnp.socket: 250 millisec
-1000 calls using http  on :8990: 730 millisec
+1000 calls using Capnp on /tmp/echoservice-capnp.socket: 230 millisec
+1000 calls using http  on :8990: 760 millisec
 1000 calls using gRPC  on :8991: 310 millisec
-1000 calls using Capnp on :8992: 350 millisec
+1000 calls using Capnp on :8992: 310 millisec
 --- test with 100K payload ---
 Invoking echo directly
-1000 calls using direct call: 3 microsec
-1000 calls using http  on /tmp/echoservice-http.socket: 4410 millisec
-1000 calls using gRPC  on unix:///tmp/echoservice-grpc.socket: 820 millisec
-1000 calls using Capnp on /tmp/echoservice-capnp.socket: 590 millisec
-1000 calls using http  on :8990: 4500 millisec
-1000 calls using gRPC  on :8991: 840 millisec
-1000 calls using Capnp on :8992: 710 millisec
+1000 calls using direct call: 2 microsec
+1000 calls using http  on /tmp/echoservice-http.socket: 4340 millisec
+1000 calls using gRPC  on unix:///tmp/echoservice-grpc.socket: 780 millisec
+1000 calls using Capnp on /tmp/echoservice-capnp.socket: 580 millisec
+1000 calls using http  on :8990: 4660 millisec
+1000 calls using gRPC  on :8991: 830 millisec
+1000 calls using Capnp on :8992: 660 millisec
 ```
 
-## 2022-08-31
-Initial crude results on an i5-4570S CPU @ 2.90GHz:
- (10% variation on repeated calls)
+## 2022-08-31 - initial comparison of 'echo' using gRPC and Capnp 
+
+This test runs 'echo' <payload> using gRPC and Capnp using various payload sizes.
+Capnp shows its marshalling advantage at higher payload but seems to have more overhead that hurts performance at smaller payloads.
 
 $ go run pkg/main.go
 ```

@@ -76,7 +76,9 @@ func InvokeEchoCapnp(address string, isUDS bool, text string, count int) {
 				return nil
 			})
 		result2, err := resp2.Struct()
-		_, err = result2.Stats()
+		s2, err := result2.Stats()
+		//fmt.Printf("Result of stats: %v\n", s2)
+		_ = s2
 		release2()
 
 		// fmt.Println("Response:", echoText)

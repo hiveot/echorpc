@@ -22,8 +22,6 @@ type EchoServiceCapnpAdapter struct {
 
 func (adapter *EchoServiceCapnpAdapter) Echo(
 	_ context.Context, call echocap.EchoService_echo) error {
-	// Ack is optional for simple functions like these.
-	call.Ack()
 	text, _ := call.Args().Text()
 	echoText, err := adapter.svc.Echo(text)
 	res, _ := call.AllocResults()
@@ -34,8 +32,6 @@ func (adapter *EchoServiceCapnpAdapter) Echo(
 // Latest returns the latest echo
 func (adapter *EchoServiceCapnpAdapter) Latest(
 	_ context.Context, call echocap.EchoService_latest) error {
-	// Ack is optional for simple functions like these.
-	call.Ack()
 	latestText, err := adapter.svc.Latest()
 	res, _ := call.AllocResults()
 	err = res.SetEchoText(latestText)
@@ -46,14 +42,11 @@ func (adapter *EchoServiceCapnpAdapter) Stats(
 	_ context.Context, call echocap.EchoService_stats) error {
 	latestText, echoCount := adapter.svc.Stats()
 
-	arena := capnp.SingleSegment(nil)
-	_, seg, err := capnp.NewMessage(arena)
-	stats, err := echocap.NewRootEchoStats(seg)
+	res, err := call.AllocResults()
+	stats, err := res.NewStats()
 
 	err = stats.SetLatest(latestText)
 	stats.SetCount(uint32(echoCount))
-	res, _ := call.AllocResults()
-	err = res.SetStats(stats)
 	return err
 }
 
