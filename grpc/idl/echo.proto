@@ -8,17 +8,20 @@ message TextParam {
   string text = 1;
 }
 
+message EchoStats {
+  string latest = 1;
+  int32  count = 2;
+}
+
 // API of the echo service
 service EchoService {
   // Return an copy of the text
-  rpc Echo(TextParam) returns (TextParam);
+  rpc echo(TextParam) returns (TextParam);
 
   // Return the upper case converted text
-  rpc Upper(TextParam) returns (TextParam);
+  rpc latest(google.protobuf.Empty) returns (TextParam);
 
-  // Return the reversed text
-  rpc Reverse(TextParam) returns (TextParam);
+  // Return the echo statistics
+  rpc stats(google.protobuf.Empty) returns (EchoStats);
 
-  // Stop the service
-  rpc Stop(google.protobuf.Empty) returns (TextParam);
 }

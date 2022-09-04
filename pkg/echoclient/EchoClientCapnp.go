@@ -33,18 +33,32 @@ func InvokeEchoCapnp(address string, isUDS bool, text string, count int) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*200)
 	defer cancel()
 
-	echoClient := cb.EchoServiceCap(rpcConn.Bootstrap(ctx))
+	// Q: in grpc this is NewEchoServiceClient. Why not do the same? - lower barrier to entry
+	//    why the need to provide a bootstrap? Can the generated code create this?
+	echoClient := cb.EchoService(rpcConn.Bootstrap(ctx))
 
 	t1 := time.Now()
 	for i := 0; i < count; i++ {
 
 		// create the client capability (eg request instance)
+		// Q: Why the callback and the 'funny' params type?
+		//    Lower barrier to entry by not having these. Eg:
+		// A: avoid having to expose EchoServiceCap_echo_Params...
+		//    method, release := echoClient.Echo(ctx)
+		//    method.Params.SetText(text)
+		// B: the grpc way would look familiar to people used to gRPC
+		//    params := EchoServiceCap_echo_Params{...}
+		//    method, release := echoClient.Echo(ctx, params)
+		//
+		// get results with:
+		//   result = method.GetResult()
 		resp, release := echoClient.Echo(ctx,
-			func(params cb.EchoServiceCap_echo_Params) error {
+			func(params cb.EchoService_echo_Params) error {
 				err = params.SetText(text)
 				return err
 			})
 		// invoke the request by asking for a result
+		// Q: why resp.Struct() instead of something like resp.Get()? Isn't the root always a struct?
 		result, err := resp.Struct()
 		if err != nil {
 			log.Fatalf("error getting response struct: %v", err)
@@ -55,6 +69,16 @@ func InvokeEchoCapnp(address string, isUDS bool, text string, count int) {
 		}
 		_ = echoText
 		release()
+
+		// second call to get stats
+		resp2, release2 := echoClient.Stats(ctx,
+			func(params cb.EchoService_stats_Params) error {
+				return nil
+			})
+		result2, err := resp2.Struct()
+		_, err = result2.Stats()
+		release2()
+
 		// fmt.Println("Response:", echoText)
 	}
 	d1 := time.Since(t1)

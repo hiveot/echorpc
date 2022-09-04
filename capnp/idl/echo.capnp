@@ -6,22 +6,32 @@ using Go = import "/go.capnp";
 $Go.package("echo");
 # The generated code will have the package name 'echo'
 
-$Go.import("github.com/hiveot/echorpc/pkg/capnp/server");
-# The generated code can be imported using this path? - why is this here
+$Go.import("github.com/hiveot/echorpc/pkg/capnp/echo");
+# Declares the full import path of this package for go.
+# This is used by the compiler to generate a go import statement in another package when importing the go code of this package.
+
+struct EchoStats {
+# Echo statistic being tracked by the service
+
+  latest @0 :Text;
+  # The latest echo
+
+  count @1 :UInt32;
+  # Number of echos received
+
+}
 
 
-interface EchoServiceCap {
+interface EchoService {
 # Add 'Cap' to the name to distinguish it from the EchoService itself and the capnp adapter
 # Comments are shown below the declaration.
 
   echo @0 (text:Text) -> (echoText: Text);
   # Return an copy of the text
   
-  upper @1 (text:Text) -> (upperText: Text);
-  # Return the upper case converted text
-  
-  reverse @2 (text:Text) -> (reverseText: Text);
-  # Return the reversed text
- 
-}
+  latest @1 () -> (echoText: Text);
+  # Return the latest echo text
 
+  stats @2 () -> (stats: EchoStats);
+  # return the statistics of echo
+}

@@ -22,11 +22,9 @@ type EchoServiceClient interface {
 	// Return an copy of the text
 	Echo(ctx context.Context, in *TextParam, opts ...grpc.CallOption) (*TextParam, error)
 	// Return the upper case converted text
-	Upper(ctx context.Context, in *TextParam, opts ...grpc.CallOption) (*TextParam, error)
-	// Return the reversed text
-	Reverse(ctx context.Context, in *TextParam, opts ...grpc.CallOption) (*TextParam, error)
-	// Stop the service
-	Stop(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*TextParam, error)
+	Latest(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*TextParam, error)
+	// Return the echo statistics
+	Stats(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*EchoStats, error)
 }
 
 type echoServiceClient struct {
@@ -39,34 +37,25 @@ func NewEchoServiceClient(cc grpc.ClientConnInterface) EchoServiceClient {
 
 func (c *echoServiceClient) Echo(ctx context.Context, in *TextParam, opts ...grpc.CallOption) (*TextParam, error) {
 	out := new(TextParam)
-	err := c.cc.Invoke(ctx, "/echo.EchoService/Echo", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/echo.EchoService/echo", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *echoServiceClient) Upper(ctx context.Context, in *TextParam, opts ...grpc.CallOption) (*TextParam, error) {
+func (c *echoServiceClient) Latest(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*TextParam, error) {
 	out := new(TextParam)
-	err := c.cc.Invoke(ctx, "/echo.EchoService/Upper", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/echo.EchoService/latest", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *echoServiceClient) Reverse(ctx context.Context, in *TextParam, opts ...grpc.CallOption) (*TextParam, error) {
-	out := new(TextParam)
-	err := c.cc.Invoke(ctx, "/echo.EchoService/Reverse", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *echoServiceClient) Stop(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*TextParam, error) {
-	out := new(TextParam)
-	err := c.cc.Invoke(ctx, "/echo.EchoService/Stop", in, out, opts...)
+func (c *echoServiceClient) Stats(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*EchoStats, error) {
+	out := new(EchoStats)
+	err := c.cc.Invoke(ctx, "/echo.EchoService/stats", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -80,11 +69,9 @@ type EchoServiceServer interface {
 	// Return an copy of the text
 	Echo(context.Context, *TextParam) (*TextParam, error)
 	// Return the upper case converted text
-	Upper(context.Context, *TextParam) (*TextParam, error)
-	// Return the reversed text
-	Reverse(context.Context, *TextParam) (*TextParam, error)
-	// Stop the service
-	Stop(context.Context, *emptypb.Empty) (*TextParam, error)
+	Latest(context.Context, *emptypb.Empty) (*TextParam, error)
+	// Return the echo statistics
+	Stats(context.Context, *emptypb.Empty) (*EchoStats, error)
 	mustEmbedUnimplementedEchoServiceServer()
 }
 
@@ -95,14 +82,11 @@ type UnimplementedEchoServiceServer struct {
 func (UnimplementedEchoServiceServer) Echo(context.Context, *TextParam) (*TextParam, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Echo not implemented")
 }
-func (UnimplementedEchoServiceServer) Upper(context.Context, *TextParam) (*TextParam, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Upper not implemented")
+func (UnimplementedEchoServiceServer) Latest(context.Context, *emptypb.Empty) (*TextParam, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Latest not implemented")
 }
-func (UnimplementedEchoServiceServer) Reverse(context.Context, *TextParam) (*TextParam, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Reverse not implemented")
-}
-func (UnimplementedEchoServiceServer) Stop(context.Context, *emptypb.Empty) (*TextParam, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Stop not implemented")
+func (UnimplementedEchoServiceServer) Stats(context.Context, *emptypb.Empty) (*EchoStats, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Stats not implemented")
 }
 func (UnimplementedEchoServiceServer) mustEmbedUnimplementedEchoServiceServer() {}
 
@@ -127,7 +111,7 @@ func _EchoService_Echo_Handler(srv interface{}, ctx context.Context, dec func(in
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/echo.EchoService/Echo",
+		FullMethod: "/echo.EchoService/echo",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(EchoServiceServer).Echo(ctx, req.(*TextParam))
@@ -135,56 +119,38 @@ func _EchoService_Echo_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
-func _EchoService_Upper_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(TextParam)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(EchoServiceServer).Upper(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/echo.EchoService/Upper",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(EchoServiceServer).Upper(ctx, req.(*TextParam))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _EchoService_Reverse_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(TextParam)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(EchoServiceServer).Reverse(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/echo.EchoService/Reverse",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(EchoServiceServer).Reverse(ctx, req.(*TextParam))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _EchoService_Stop_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _EchoService_Latest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(emptypb.Empty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(EchoServiceServer).Stop(ctx, in)
+		return srv.(EchoServiceServer).Latest(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/echo.EchoService/Stop",
+		FullMethod: "/echo.EchoService/latest",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(EchoServiceServer).Stop(ctx, req.(*emptypb.Empty))
+		return srv.(EchoServiceServer).Latest(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _EchoService_Stats_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(EchoServiceServer).Stats(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/echo.EchoService/stats",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(EchoServiceServer).Stats(ctx, req.(*emptypb.Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -197,20 +163,16 @@ var EchoService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*EchoServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Echo",
+			MethodName: "echo",
 			Handler:    _EchoService_Echo_Handler,
 		},
 		{
-			MethodName: "Upper",
-			Handler:    _EchoService_Upper_Handler,
+			MethodName: "latest",
+			Handler:    _EchoService_Latest_Handler,
 		},
 		{
-			MethodName: "Reverse",
-			Handler:    _EchoService_Reverse_Handler,
-		},
-		{
-			MethodName: "Stop",
-			Handler:    _EchoService_Stop_Handler,
+			MethodName: "stats",
+			Handler:    _EchoService_Stats_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

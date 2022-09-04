@@ -8,6 +8,7 @@ import (
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/protobuf/types/known/emptypb"
 
 	pb "github.com/hiveot/echorpc/grpc/go"
 )
@@ -34,6 +35,7 @@ func InvokeEchoGrpc(address string, isUDS bool, text string, count int) {
 	t1 := time.Now()
 	for i := 0; i < count; i++ {
 		response, err := client.Echo(ctx, &pb.TextParam{Text: text})
+		_, _ = client.Stats(ctx, &emptypb.Empty{})
 		if err != nil {
 			log.Fatalf("error echo response: %s", err)
 		}

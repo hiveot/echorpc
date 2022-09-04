@@ -10,736 +10,807 @@ import (
 	context "context"
 )
 
-type EchoServiceCap capnp.Client
+type EchoStats capnp.Struct
 
-// EchoServiceCap_TypeID is the unique identifier for the type EchoServiceCap.
-const EchoServiceCap_TypeID = 0xb90cc72543e28a37
+// EchoStats_TypeID is the unique identifier for the type EchoStats.
+const EchoStats_TypeID = 0xed52e5bef76b7c45
 
-func (c EchoServiceCap) Echo(ctx context.Context, params func(EchoServiceCap_echo_Params) error) (EchoServiceCap_echo_Results_Future, capnp.ReleaseFunc) {
+func NewEchoStats(s *capnp.Segment) (EchoStats, error) {
+	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 8, PointerCount: 1})
+	return EchoStats(st), err
+}
+
+func NewRootEchoStats(s *capnp.Segment) (EchoStats, error) {
+	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 8, PointerCount: 1})
+	return EchoStats(st), err
+}
+
+func ReadRootEchoStats(msg *capnp.Message) (EchoStats, error) {
+	root, err := msg.Root()
+	return EchoStats(root.Struct()), err
+}
+
+func (s EchoStats) String() string {
+	str, _ := text.Marshal(0xed52e5bef76b7c45, capnp.Struct(s))
+	return str
+}
+
+func (s EchoStats) EncodeAsPtr(seg *capnp.Segment) capnp.Ptr {
+	return capnp.Struct(s).EncodeAsPtr(seg)
+}
+
+func (EchoStats) DecodeFromPtr(p capnp.Ptr) EchoStats {
+	return EchoStats(capnp.Struct{}.DecodeFromPtr(p))
+}
+
+func (s EchoStats) ToPtr() capnp.Ptr {
+	return capnp.Struct(s).ToPtr()
+}
+func (s EchoStats) IsValid() bool {
+	return capnp.Struct(s).IsValid()
+}
+
+func (s EchoStats) Message() *capnp.Message {
+	return capnp.Struct(s).Message()
+}
+
+func (s EchoStats) Segment() *capnp.Segment {
+	return capnp.Struct(s).Segment()
+}
+func (s EchoStats) Latest() (string, error) {
+	p, err := capnp.Struct(s).Ptr(0)
+	return p.Text(), err
+}
+
+func (s EchoStats) HasLatest() bool {
+	return capnp.Struct(s).HasPtr(0)
+}
+
+func (s EchoStats) LatestBytes() ([]byte, error) {
+	p, err := capnp.Struct(s).Ptr(0)
+	return p.TextBytes(), err
+}
+
+func (s EchoStats) SetLatest(v string) error {
+	return capnp.Struct(s).SetText(0, v)
+}
+
+func (s EchoStats) Count() uint32 {
+	return capnp.Struct(s).Uint32(0)
+}
+
+func (s EchoStats) SetCount(v uint32) {
+	capnp.Struct(s).SetUint32(0, v)
+}
+
+// EchoStats_List is a list of EchoStats.
+type EchoStats_List = capnp.StructList[EchoStats]
+
+// NewEchoStats creates a new list of EchoStats.
+func NewEchoStats_List(s *capnp.Segment, sz int32) (EchoStats_List, error) {
+	l, err := capnp.NewCompositeList(s, capnp.ObjectSize{DataSize: 8, PointerCount: 1}, sz)
+	return capnp.StructList[EchoStats](l), err
+}
+
+// EchoStats_Future is a wrapper for a EchoStats promised by a client call.
+type EchoStats_Future struct{ *capnp.Future }
+
+func (p EchoStats_Future) Struct() (EchoStats, error) {
+	s, err := p.Future.Struct()
+	return EchoStats(s), err
+}
+
+type EchoService capnp.Client
+
+// EchoService_TypeID is the unique identifier for the type EchoService.
+const EchoService_TypeID = 0xd52277af4a9defbf
+
+func (c EchoService) Echo(ctx context.Context, params func(EchoService_echo_Params) error) (EchoService_echo_Results_Future, capnp.ReleaseFunc) {
 	s := capnp.Send{
 		Method: capnp.Method{
-			InterfaceID:   0xb90cc72543e28a37,
+			InterfaceID:   0xd52277af4a9defbf,
 			MethodID:      0,
-			InterfaceName: "echo.capnp:EchoServiceCap",
+			InterfaceName: "echo.capnp:EchoService",
 			MethodName:    "echo",
 		},
 	}
 	if params != nil {
 		s.ArgsSize = capnp.ObjectSize{DataSize: 0, PointerCount: 1}
-		s.PlaceArgs = func(s capnp.Struct) error { return params(EchoServiceCap_echo_Params(s)) }
+		s.PlaceArgs = func(s capnp.Struct) error { return params(EchoService_echo_Params(s)) }
 	}
 	ans, release := capnp.Client(c).SendCall(ctx, s)
-	return EchoServiceCap_echo_Results_Future{Future: ans.Future()}, release
+	return EchoService_echo_Results_Future{Future: ans.Future()}, release
 }
-func (c EchoServiceCap) Upper(ctx context.Context, params func(EchoServiceCap_upper_Params) error) (EchoServiceCap_upper_Results_Future, capnp.ReleaseFunc) {
+func (c EchoService) Latest(ctx context.Context, params func(EchoService_latest_Params) error) (EchoService_latest_Results_Future, capnp.ReleaseFunc) {
 	s := capnp.Send{
 		Method: capnp.Method{
-			InterfaceID:   0xb90cc72543e28a37,
+			InterfaceID:   0xd52277af4a9defbf,
 			MethodID:      1,
-			InterfaceName: "echo.capnp:EchoServiceCap",
-			MethodName:    "upper",
+			InterfaceName: "echo.capnp:EchoService",
+			MethodName:    "latest",
 		},
 	}
 	if params != nil {
-		s.ArgsSize = capnp.ObjectSize{DataSize: 0, PointerCount: 1}
-		s.PlaceArgs = func(s capnp.Struct) error { return params(EchoServiceCap_upper_Params(s)) }
+		s.ArgsSize = capnp.ObjectSize{DataSize: 0, PointerCount: 0}
+		s.PlaceArgs = func(s capnp.Struct) error { return params(EchoService_latest_Params(s)) }
 	}
 	ans, release := capnp.Client(c).SendCall(ctx, s)
-	return EchoServiceCap_upper_Results_Future{Future: ans.Future()}, release
+	return EchoService_latest_Results_Future{Future: ans.Future()}, release
 }
-func (c EchoServiceCap) Reverse(ctx context.Context, params func(EchoServiceCap_reverse_Params) error) (EchoServiceCap_reverse_Results_Future, capnp.ReleaseFunc) {
+func (c EchoService) Stats(ctx context.Context, params func(EchoService_stats_Params) error) (EchoService_stats_Results_Future, capnp.ReleaseFunc) {
 	s := capnp.Send{
 		Method: capnp.Method{
-			InterfaceID:   0xb90cc72543e28a37,
+			InterfaceID:   0xd52277af4a9defbf,
 			MethodID:      2,
-			InterfaceName: "echo.capnp:EchoServiceCap",
-			MethodName:    "reverse",
+			InterfaceName: "echo.capnp:EchoService",
+			MethodName:    "stats",
 		},
 	}
 	if params != nil {
-		s.ArgsSize = capnp.ObjectSize{DataSize: 0, PointerCount: 1}
-		s.PlaceArgs = func(s capnp.Struct) error { return params(EchoServiceCap_reverse_Params(s)) }
+		s.ArgsSize = capnp.ObjectSize{DataSize: 0, PointerCount: 0}
+		s.PlaceArgs = func(s capnp.Struct) error { return params(EchoService_stats_Params(s)) }
 	}
 	ans, release := capnp.Client(c).SendCall(ctx, s)
-	return EchoServiceCap_reverse_Results_Future{Future: ans.Future()}, release
+	return EchoService_stats_Results_Future{Future: ans.Future()}, release
 }
 
-func (c EchoServiceCap) AddRef() EchoServiceCap {
-	return EchoServiceCap(capnp.Client(c).AddRef())
+func (c EchoService) AddRef() EchoService {
+	return EchoService(capnp.Client(c).AddRef())
 }
 
-func (c EchoServiceCap) Release() {
+func (c EchoService) Release() {
 	capnp.Client(c).Release()
 }
 
-func (c EchoServiceCap) EncodeAsPtr(seg *capnp.Segment) capnp.Ptr {
+func (c EchoService) EncodeAsPtr(seg *capnp.Segment) capnp.Ptr {
 	return capnp.Client(c).EncodeAsPtr(seg)
 }
 
-func (EchoServiceCap) DecodeFromPtr(p capnp.Ptr) EchoServiceCap {
-	return EchoServiceCap(capnp.Client{}.DecodeFromPtr(p))
+func (EchoService) DecodeFromPtr(p capnp.Ptr) EchoService {
+	return EchoService(capnp.Client{}.DecodeFromPtr(p))
 }
 
-func (c EchoServiceCap) IsValid() bool {
+func (c EchoService) IsValid() bool {
 	return capnp.Client(c).IsValid()
 }
 
-// A EchoServiceCap_Server is a EchoServiceCap with a local implementation.
-type EchoServiceCap_Server interface {
-	Echo(context.Context, EchoServiceCap_echo) error
+// A EchoService_Server is a EchoService with a local implementation.
+type EchoService_Server interface {
+	Echo(context.Context, EchoService_echo) error
 
-	Upper(context.Context, EchoServiceCap_upper) error
+	Latest(context.Context, EchoService_latest) error
 
-	Reverse(context.Context, EchoServiceCap_reverse) error
+	Stats(context.Context, EchoService_stats) error
 }
 
-// EchoServiceCap_NewServer creates a new Server from an implementation of EchoServiceCap_Server.
-func EchoServiceCap_NewServer(s EchoServiceCap_Server) *server.Server {
+// EchoService_NewServer creates a new Server from an implementation of EchoService_Server.
+func EchoService_NewServer(s EchoService_Server) *server.Server {
 	c, _ := s.(server.Shutdowner)
-	return server.New(EchoServiceCap_Methods(nil, s), s, c)
+	return server.New(EchoService_Methods(nil, s), s, c)
 }
 
-// EchoServiceCap_ServerToClient creates a new Client from an implementation of EchoServiceCap_Server.
+// EchoService_ServerToClient creates a new Client from an implementation of EchoService_Server.
 // The caller is responsible for calling Release on the returned Client.
-func EchoServiceCap_ServerToClient(s EchoServiceCap_Server) EchoServiceCap {
-	return EchoServiceCap(capnp.NewClient(EchoServiceCap_NewServer(s)))
+func EchoService_ServerToClient(s EchoService_Server) EchoService {
+	return EchoService(capnp.NewClient(EchoService_NewServer(s)))
 }
 
-// EchoServiceCap_Methods appends Methods to a slice that invoke the methods on s.
+// EchoService_Methods appends Methods to a slice that invoke the methods on s.
 // This can be used to create a more complicated Server.
-func EchoServiceCap_Methods(methods []server.Method, s EchoServiceCap_Server) []server.Method {
+func EchoService_Methods(methods []server.Method, s EchoService_Server) []server.Method {
 	if cap(methods) == 0 {
 		methods = make([]server.Method, 0, 3)
 	}
 
 	methods = append(methods, server.Method{
 		Method: capnp.Method{
-			InterfaceID:   0xb90cc72543e28a37,
+			InterfaceID:   0xd52277af4a9defbf,
 			MethodID:      0,
-			InterfaceName: "echo.capnp:EchoServiceCap",
+			InterfaceName: "echo.capnp:EchoService",
 			MethodName:    "echo",
 		},
 		Impl: func(ctx context.Context, call *server.Call) error {
-			return s.Echo(ctx, EchoServiceCap_echo{call})
+			return s.Echo(ctx, EchoService_echo{call})
 		},
 	})
 
 	methods = append(methods, server.Method{
 		Method: capnp.Method{
-			InterfaceID:   0xb90cc72543e28a37,
+			InterfaceID:   0xd52277af4a9defbf,
 			MethodID:      1,
-			InterfaceName: "echo.capnp:EchoServiceCap",
-			MethodName:    "upper",
+			InterfaceName: "echo.capnp:EchoService",
+			MethodName:    "latest",
 		},
 		Impl: func(ctx context.Context, call *server.Call) error {
-			return s.Upper(ctx, EchoServiceCap_upper{call})
+			return s.Latest(ctx, EchoService_latest{call})
 		},
 	})
 
 	methods = append(methods, server.Method{
 		Method: capnp.Method{
-			InterfaceID:   0xb90cc72543e28a37,
+			InterfaceID:   0xd52277af4a9defbf,
 			MethodID:      2,
-			InterfaceName: "echo.capnp:EchoServiceCap",
-			MethodName:    "reverse",
+			InterfaceName: "echo.capnp:EchoService",
+			MethodName:    "stats",
 		},
 		Impl: func(ctx context.Context, call *server.Call) error {
-			return s.Reverse(ctx, EchoServiceCap_reverse{call})
+			return s.Stats(ctx, EchoService_stats{call})
 		},
 	})
 
 	return methods
 }
 
-// EchoServiceCap_echo holds the state for a server call to EchoServiceCap.echo.
+// EchoService_echo holds the state for a server call to EchoService.echo.
 // See server.Call for documentation.
-type EchoServiceCap_echo struct {
+type EchoService_echo struct {
 	*server.Call
 }
 
 // Args returns the call's arguments.
-func (c EchoServiceCap_echo) Args() EchoServiceCap_echo_Params {
-	return EchoServiceCap_echo_Params(c.Call.Args())
+func (c EchoService_echo) Args() EchoService_echo_Params {
+	return EchoService_echo_Params(c.Call.Args())
 }
 
 // AllocResults allocates the results struct.
-func (c EchoServiceCap_echo) AllocResults() (EchoServiceCap_echo_Results, error) {
+func (c EchoService_echo) AllocResults() (EchoService_echo_Results, error) {
 	r, err := c.Call.AllocResults(capnp.ObjectSize{DataSize: 0, PointerCount: 1})
-	return EchoServiceCap_echo_Results(r), err
+	return EchoService_echo_Results(r), err
 }
 
-// EchoServiceCap_upper holds the state for a server call to EchoServiceCap.upper.
+// EchoService_latest holds the state for a server call to EchoService.latest.
 // See server.Call for documentation.
-type EchoServiceCap_upper struct {
+type EchoService_latest struct {
 	*server.Call
 }
 
 // Args returns the call's arguments.
-func (c EchoServiceCap_upper) Args() EchoServiceCap_upper_Params {
-	return EchoServiceCap_upper_Params(c.Call.Args())
+func (c EchoService_latest) Args() EchoService_latest_Params {
+	return EchoService_latest_Params(c.Call.Args())
 }
 
 // AllocResults allocates the results struct.
-func (c EchoServiceCap_upper) AllocResults() (EchoServiceCap_upper_Results, error) {
+func (c EchoService_latest) AllocResults() (EchoService_latest_Results, error) {
 	r, err := c.Call.AllocResults(capnp.ObjectSize{DataSize: 0, PointerCount: 1})
-	return EchoServiceCap_upper_Results(r), err
+	return EchoService_latest_Results(r), err
 }
 
-// EchoServiceCap_reverse holds the state for a server call to EchoServiceCap.reverse.
+// EchoService_stats holds the state for a server call to EchoService.stats.
 // See server.Call for documentation.
-type EchoServiceCap_reverse struct {
+type EchoService_stats struct {
 	*server.Call
 }
 
 // Args returns the call's arguments.
-func (c EchoServiceCap_reverse) Args() EchoServiceCap_reverse_Params {
-	return EchoServiceCap_reverse_Params(c.Call.Args())
+func (c EchoService_stats) Args() EchoService_stats_Params {
+	return EchoService_stats_Params(c.Call.Args())
 }
 
 // AllocResults allocates the results struct.
-func (c EchoServiceCap_reverse) AllocResults() (EchoServiceCap_reverse_Results, error) {
+func (c EchoService_stats) AllocResults() (EchoService_stats_Results, error) {
 	r, err := c.Call.AllocResults(capnp.ObjectSize{DataSize: 0, PointerCount: 1})
-	return EchoServiceCap_reverse_Results(r), err
+	return EchoService_stats_Results(r), err
 }
 
-// EchoServiceCap_List is a list of EchoServiceCap.
-type EchoServiceCap_List = capnp.CapList[EchoServiceCap]
+// EchoService_List is a list of EchoService.
+type EchoService_List = capnp.CapList[EchoService]
 
-// NewEchoServiceCap creates a new list of EchoServiceCap.
-func NewEchoServiceCap_List(s *capnp.Segment, sz int32) (EchoServiceCap_List, error) {
+// NewEchoService creates a new list of EchoService.
+func NewEchoService_List(s *capnp.Segment, sz int32) (EchoService_List, error) {
 	l, err := capnp.NewPointerList(s, sz)
-	return capnp.CapList[EchoServiceCap](l), err
+	return capnp.CapList[EchoService](l), err
 }
 
-type EchoServiceCap_echo_Params capnp.Struct
+type EchoService_echo_Params capnp.Struct
 
-// EchoServiceCap_echo_Params_TypeID is the unique identifier for the type EchoServiceCap_echo_Params.
-const EchoServiceCap_echo_Params_TypeID = 0x99a36f1c77433dfb
+// EchoService_echo_Params_TypeID is the unique identifier for the type EchoService_echo_Params.
+const EchoService_echo_Params_TypeID = 0xe2bab90824c7835f
 
-func NewEchoServiceCap_echo_Params(s *capnp.Segment) (EchoServiceCap_echo_Params, error) {
+func NewEchoService_echo_Params(s *capnp.Segment) (EchoService_echo_Params, error) {
 	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 1})
-	return EchoServiceCap_echo_Params(st), err
+	return EchoService_echo_Params(st), err
 }
 
-func NewRootEchoServiceCap_echo_Params(s *capnp.Segment) (EchoServiceCap_echo_Params, error) {
+func NewRootEchoService_echo_Params(s *capnp.Segment) (EchoService_echo_Params, error) {
 	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 1})
-	return EchoServiceCap_echo_Params(st), err
+	return EchoService_echo_Params(st), err
 }
 
-func ReadRootEchoServiceCap_echo_Params(msg *capnp.Message) (EchoServiceCap_echo_Params, error) {
+func ReadRootEchoService_echo_Params(msg *capnp.Message) (EchoService_echo_Params, error) {
 	root, err := msg.Root()
-	return EchoServiceCap_echo_Params(root.Struct()), err
+	return EchoService_echo_Params(root.Struct()), err
 }
 
-func (s EchoServiceCap_echo_Params) String() string {
-	str, _ := text.Marshal(0x99a36f1c77433dfb, capnp.Struct(s))
+func (s EchoService_echo_Params) String() string {
+	str, _ := text.Marshal(0xe2bab90824c7835f, capnp.Struct(s))
 	return str
 }
 
-func (s EchoServiceCap_echo_Params) EncodeAsPtr(seg *capnp.Segment) capnp.Ptr {
+func (s EchoService_echo_Params) EncodeAsPtr(seg *capnp.Segment) capnp.Ptr {
 	return capnp.Struct(s).EncodeAsPtr(seg)
 }
 
-func (EchoServiceCap_echo_Params) DecodeFromPtr(p capnp.Ptr) EchoServiceCap_echo_Params {
-	return EchoServiceCap_echo_Params(capnp.Struct{}.DecodeFromPtr(p))
+func (EchoService_echo_Params) DecodeFromPtr(p capnp.Ptr) EchoService_echo_Params {
+	return EchoService_echo_Params(capnp.Struct{}.DecodeFromPtr(p))
 }
 
-func (s EchoServiceCap_echo_Params) ToPtr() capnp.Ptr {
+func (s EchoService_echo_Params) ToPtr() capnp.Ptr {
 	return capnp.Struct(s).ToPtr()
 }
-func (s EchoServiceCap_echo_Params) IsValid() bool {
+func (s EchoService_echo_Params) IsValid() bool {
 	return capnp.Struct(s).IsValid()
 }
 
-func (s EchoServiceCap_echo_Params) Message() *capnp.Message {
+func (s EchoService_echo_Params) Message() *capnp.Message {
 	return capnp.Struct(s).Message()
 }
 
-func (s EchoServiceCap_echo_Params) Segment() *capnp.Segment {
+func (s EchoService_echo_Params) Segment() *capnp.Segment {
 	return capnp.Struct(s).Segment()
 }
-func (s EchoServiceCap_echo_Params) Text() (string, error) {
+func (s EchoService_echo_Params) Text() (string, error) {
 	p, err := capnp.Struct(s).Ptr(0)
 	return p.Text(), err
 }
 
-func (s EchoServiceCap_echo_Params) HasText() bool {
+func (s EchoService_echo_Params) HasText() bool {
 	return capnp.Struct(s).HasPtr(0)
 }
 
-func (s EchoServiceCap_echo_Params) TextBytes() ([]byte, error) {
+func (s EchoService_echo_Params) TextBytes() ([]byte, error) {
 	p, err := capnp.Struct(s).Ptr(0)
 	return p.TextBytes(), err
 }
 
-func (s EchoServiceCap_echo_Params) SetText(v string) error {
+func (s EchoService_echo_Params) SetText(v string) error {
 	return capnp.Struct(s).SetText(0, v)
 }
 
-// EchoServiceCap_echo_Params_List is a list of EchoServiceCap_echo_Params.
-type EchoServiceCap_echo_Params_List = capnp.StructList[EchoServiceCap_echo_Params]
+// EchoService_echo_Params_List is a list of EchoService_echo_Params.
+type EchoService_echo_Params_List = capnp.StructList[EchoService_echo_Params]
 
-// NewEchoServiceCap_echo_Params creates a new list of EchoServiceCap_echo_Params.
-func NewEchoServiceCap_echo_Params_List(s *capnp.Segment, sz int32) (EchoServiceCap_echo_Params_List, error) {
+// NewEchoService_echo_Params creates a new list of EchoService_echo_Params.
+func NewEchoService_echo_Params_List(s *capnp.Segment, sz int32) (EchoService_echo_Params_List, error) {
 	l, err := capnp.NewCompositeList(s, capnp.ObjectSize{DataSize: 0, PointerCount: 1}, sz)
-	return capnp.StructList[EchoServiceCap_echo_Params](l), err
+	return capnp.StructList[EchoService_echo_Params](l), err
 }
 
-// EchoServiceCap_echo_Params_Future is a wrapper for a EchoServiceCap_echo_Params promised by a client call.
-type EchoServiceCap_echo_Params_Future struct{ *capnp.Future }
+// EchoService_echo_Params_Future is a wrapper for a EchoService_echo_Params promised by a client call.
+type EchoService_echo_Params_Future struct{ *capnp.Future }
 
-func (p EchoServiceCap_echo_Params_Future) Struct() (EchoServiceCap_echo_Params, error) {
+func (p EchoService_echo_Params_Future) Struct() (EchoService_echo_Params, error) {
 	s, err := p.Future.Struct()
-	return EchoServiceCap_echo_Params(s), err
+	return EchoService_echo_Params(s), err
 }
 
-type EchoServiceCap_echo_Results capnp.Struct
+type EchoService_echo_Results capnp.Struct
 
-// EchoServiceCap_echo_Results_TypeID is the unique identifier for the type EchoServiceCap_echo_Results.
-const EchoServiceCap_echo_Results_TypeID = 0xab6f8990059315ae
+// EchoService_echo_Results_TypeID is the unique identifier for the type EchoService_echo_Results.
+const EchoService_echo_Results_TypeID = 0xb84fbc6148a9c28d
 
-func NewEchoServiceCap_echo_Results(s *capnp.Segment) (EchoServiceCap_echo_Results, error) {
+func NewEchoService_echo_Results(s *capnp.Segment) (EchoService_echo_Results, error) {
 	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 1})
-	return EchoServiceCap_echo_Results(st), err
+	return EchoService_echo_Results(st), err
 }
 
-func NewRootEchoServiceCap_echo_Results(s *capnp.Segment) (EchoServiceCap_echo_Results, error) {
+func NewRootEchoService_echo_Results(s *capnp.Segment) (EchoService_echo_Results, error) {
 	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 1})
-	return EchoServiceCap_echo_Results(st), err
+	return EchoService_echo_Results(st), err
 }
 
-func ReadRootEchoServiceCap_echo_Results(msg *capnp.Message) (EchoServiceCap_echo_Results, error) {
+func ReadRootEchoService_echo_Results(msg *capnp.Message) (EchoService_echo_Results, error) {
 	root, err := msg.Root()
-	return EchoServiceCap_echo_Results(root.Struct()), err
+	return EchoService_echo_Results(root.Struct()), err
 }
 
-func (s EchoServiceCap_echo_Results) String() string {
-	str, _ := text.Marshal(0xab6f8990059315ae, capnp.Struct(s))
+func (s EchoService_echo_Results) String() string {
+	str, _ := text.Marshal(0xb84fbc6148a9c28d, capnp.Struct(s))
 	return str
 }
 
-func (s EchoServiceCap_echo_Results) EncodeAsPtr(seg *capnp.Segment) capnp.Ptr {
+func (s EchoService_echo_Results) EncodeAsPtr(seg *capnp.Segment) capnp.Ptr {
 	return capnp.Struct(s).EncodeAsPtr(seg)
 }
 
-func (EchoServiceCap_echo_Results) DecodeFromPtr(p capnp.Ptr) EchoServiceCap_echo_Results {
-	return EchoServiceCap_echo_Results(capnp.Struct{}.DecodeFromPtr(p))
+func (EchoService_echo_Results) DecodeFromPtr(p capnp.Ptr) EchoService_echo_Results {
+	return EchoService_echo_Results(capnp.Struct{}.DecodeFromPtr(p))
 }
 
-func (s EchoServiceCap_echo_Results) ToPtr() capnp.Ptr {
+func (s EchoService_echo_Results) ToPtr() capnp.Ptr {
 	return capnp.Struct(s).ToPtr()
 }
-func (s EchoServiceCap_echo_Results) IsValid() bool {
+func (s EchoService_echo_Results) IsValid() bool {
 	return capnp.Struct(s).IsValid()
 }
 
-func (s EchoServiceCap_echo_Results) Message() *capnp.Message {
+func (s EchoService_echo_Results) Message() *capnp.Message {
 	return capnp.Struct(s).Message()
 }
 
-func (s EchoServiceCap_echo_Results) Segment() *capnp.Segment {
+func (s EchoService_echo_Results) Segment() *capnp.Segment {
 	return capnp.Struct(s).Segment()
 }
-func (s EchoServiceCap_echo_Results) EchoText() (string, error) {
+func (s EchoService_echo_Results) EchoText() (string, error) {
 	p, err := capnp.Struct(s).Ptr(0)
 	return p.Text(), err
 }
 
-func (s EchoServiceCap_echo_Results) HasEchoText() bool {
+func (s EchoService_echo_Results) HasEchoText() bool {
 	return capnp.Struct(s).HasPtr(0)
 }
 
-func (s EchoServiceCap_echo_Results) EchoTextBytes() ([]byte, error) {
+func (s EchoService_echo_Results) EchoTextBytes() ([]byte, error) {
 	p, err := capnp.Struct(s).Ptr(0)
 	return p.TextBytes(), err
 }
 
-func (s EchoServiceCap_echo_Results) SetEchoText(v string) error {
+func (s EchoService_echo_Results) SetEchoText(v string) error {
 	return capnp.Struct(s).SetText(0, v)
 }
 
-// EchoServiceCap_echo_Results_List is a list of EchoServiceCap_echo_Results.
-type EchoServiceCap_echo_Results_List = capnp.StructList[EchoServiceCap_echo_Results]
+// EchoService_echo_Results_List is a list of EchoService_echo_Results.
+type EchoService_echo_Results_List = capnp.StructList[EchoService_echo_Results]
 
-// NewEchoServiceCap_echo_Results creates a new list of EchoServiceCap_echo_Results.
-func NewEchoServiceCap_echo_Results_List(s *capnp.Segment, sz int32) (EchoServiceCap_echo_Results_List, error) {
+// NewEchoService_echo_Results creates a new list of EchoService_echo_Results.
+func NewEchoService_echo_Results_List(s *capnp.Segment, sz int32) (EchoService_echo_Results_List, error) {
 	l, err := capnp.NewCompositeList(s, capnp.ObjectSize{DataSize: 0, PointerCount: 1}, sz)
-	return capnp.StructList[EchoServiceCap_echo_Results](l), err
+	return capnp.StructList[EchoService_echo_Results](l), err
 }
 
-// EchoServiceCap_echo_Results_Future is a wrapper for a EchoServiceCap_echo_Results promised by a client call.
-type EchoServiceCap_echo_Results_Future struct{ *capnp.Future }
+// EchoService_echo_Results_Future is a wrapper for a EchoService_echo_Results promised by a client call.
+type EchoService_echo_Results_Future struct{ *capnp.Future }
 
-func (p EchoServiceCap_echo_Results_Future) Struct() (EchoServiceCap_echo_Results, error) {
+func (p EchoService_echo_Results_Future) Struct() (EchoService_echo_Results, error) {
 	s, err := p.Future.Struct()
-	return EchoServiceCap_echo_Results(s), err
+	return EchoService_echo_Results(s), err
 }
 
-type EchoServiceCap_upper_Params capnp.Struct
+type EchoService_latest_Params capnp.Struct
 
-// EchoServiceCap_upper_Params_TypeID is the unique identifier for the type EchoServiceCap_upper_Params.
-const EchoServiceCap_upper_Params_TypeID = 0xfad237009c515693
+// EchoService_latest_Params_TypeID is the unique identifier for the type EchoService_latest_Params.
+const EchoService_latest_Params_TypeID = 0x8014ae8fc337c698
 
-func NewEchoServiceCap_upper_Params(s *capnp.Segment) (EchoServiceCap_upper_Params, error) {
-	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 1})
-	return EchoServiceCap_upper_Params(st), err
+func NewEchoService_latest_Params(s *capnp.Segment) (EchoService_latest_Params, error) {
+	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 0})
+	return EchoService_latest_Params(st), err
 }
 
-func NewRootEchoServiceCap_upper_Params(s *capnp.Segment) (EchoServiceCap_upper_Params, error) {
-	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 1})
-	return EchoServiceCap_upper_Params(st), err
+func NewRootEchoService_latest_Params(s *capnp.Segment) (EchoService_latest_Params, error) {
+	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 0})
+	return EchoService_latest_Params(st), err
 }
 
-func ReadRootEchoServiceCap_upper_Params(msg *capnp.Message) (EchoServiceCap_upper_Params, error) {
+func ReadRootEchoService_latest_Params(msg *capnp.Message) (EchoService_latest_Params, error) {
 	root, err := msg.Root()
-	return EchoServiceCap_upper_Params(root.Struct()), err
+	return EchoService_latest_Params(root.Struct()), err
 }
 
-func (s EchoServiceCap_upper_Params) String() string {
-	str, _ := text.Marshal(0xfad237009c515693, capnp.Struct(s))
+func (s EchoService_latest_Params) String() string {
+	str, _ := text.Marshal(0x8014ae8fc337c698, capnp.Struct(s))
 	return str
 }
 
-func (s EchoServiceCap_upper_Params) EncodeAsPtr(seg *capnp.Segment) capnp.Ptr {
+func (s EchoService_latest_Params) EncodeAsPtr(seg *capnp.Segment) capnp.Ptr {
 	return capnp.Struct(s).EncodeAsPtr(seg)
 }
 
-func (EchoServiceCap_upper_Params) DecodeFromPtr(p capnp.Ptr) EchoServiceCap_upper_Params {
-	return EchoServiceCap_upper_Params(capnp.Struct{}.DecodeFromPtr(p))
+func (EchoService_latest_Params) DecodeFromPtr(p capnp.Ptr) EchoService_latest_Params {
+	return EchoService_latest_Params(capnp.Struct{}.DecodeFromPtr(p))
 }
 
-func (s EchoServiceCap_upper_Params) ToPtr() capnp.Ptr {
+func (s EchoService_latest_Params) ToPtr() capnp.Ptr {
 	return capnp.Struct(s).ToPtr()
 }
-func (s EchoServiceCap_upper_Params) IsValid() bool {
+func (s EchoService_latest_Params) IsValid() bool {
 	return capnp.Struct(s).IsValid()
 }
 
-func (s EchoServiceCap_upper_Params) Message() *capnp.Message {
+func (s EchoService_latest_Params) Message() *capnp.Message {
 	return capnp.Struct(s).Message()
 }
 
-func (s EchoServiceCap_upper_Params) Segment() *capnp.Segment {
+func (s EchoService_latest_Params) Segment() *capnp.Segment {
 	return capnp.Struct(s).Segment()
 }
-func (s EchoServiceCap_upper_Params) Text() (string, error) {
+
+// EchoService_latest_Params_List is a list of EchoService_latest_Params.
+type EchoService_latest_Params_List = capnp.StructList[EchoService_latest_Params]
+
+// NewEchoService_latest_Params creates a new list of EchoService_latest_Params.
+func NewEchoService_latest_Params_List(s *capnp.Segment, sz int32) (EchoService_latest_Params_List, error) {
+	l, err := capnp.NewCompositeList(s, capnp.ObjectSize{DataSize: 0, PointerCount: 0}, sz)
+	return capnp.StructList[EchoService_latest_Params](l), err
+}
+
+// EchoService_latest_Params_Future is a wrapper for a EchoService_latest_Params promised by a client call.
+type EchoService_latest_Params_Future struct{ *capnp.Future }
+
+func (p EchoService_latest_Params_Future) Struct() (EchoService_latest_Params, error) {
+	s, err := p.Future.Struct()
+	return EchoService_latest_Params(s), err
+}
+
+type EchoService_latest_Results capnp.Struct
+
+// EchoService_latest_Results_TypeID is the unique identifier for the type EchoService_latest_Results.
+const EchoService_latest_Results_TypeID = 0xa808aa9542253d6d
+
+func NewEchoService_latest_Results(s *capnp.Segment) (EchoService_latest_Results, error) {
+	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 1})
+	return EchoService_latest_Results(st), err
+}
+
+func NewRootEchoService_latest_Results(s *capnp.Segment) (EchoService_latest_Results, error) {
+	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 1})
+	return EchoService_latest_Results(st), err
+}
+
+func ReadRootEchoService_latest_Results(msg *capnp.Message) (EchoService_latest_Results, error) {
+	root, err := msg.Root()
+	return EchoService_latest_Results(root.Struct()), err
+}
+
+func (s EchoService_latest_Results) String() string {
+	str, _ := text.Marshal(0xa808aa9542253d6d, capnp.Struct(s))
+	return str
+}
+
+func (s EchoService_latest_Results) EncodeAsPtr(seg *capnp.Segment) capnp.Ptr {
+	return capnp.Struct(s).EncodeAsPtr(seg)
+}
+
+func (EchoService_latest_Results) DecodeFromPtr(p capnp.Ptr) EchoService_latest_Results {
+	return EchoService_latest_Results(capnp.Struct{}.DecodeFromPtr(p))
+}
+
+func (s EchoService_latest_Results) ToPtr() capnp.Ptr {
+	return capnp.Struct(s).ToPtr()
+}
+func (s EchoService_latest_Results) IsValid() bool {
+	return capnp.Struct(s).IsValid()
+}
+
+func (s EchoService_latest_Results) Message() *capnp.Message {
+	return capnp.Struct(s).Message()
+}
+
+func (s EchoService_latest_Results) Segment() *capnp.Segment {
+	return capnp.Struct(s).Segment()
+}
+func (s EchoService_latest_Results) EchoText() (string, error) {
 	p, err := capnp.Struct(s).Ptr(0)
 	return p.Text(), err
 }
 
-func (s EchoServiceCap_upper_Params) HasText() bool {
+func (s EchoService_latest_Results) HasEchoText() bool {
 	return capnp.Struct(s).HasPtr(0)
 }
 
-func (s EchoServiceCap_upper_Params) TextBytes() ([]byte, error) {
+func (s EchoService_latest_Results) EchoTextBytes() ([]byte, error) {
 	p, err := capnp.Struct(s).Ptr(0)
 	return p.TextBytes(), err
 }
 
-func (s EchoServiceCap_upper_Params) SetText(v string) error {
+func (s EchoService_latest_Results) SetEchoText(v string) error {
 	return capnp.Struct(s).SetText(0, v)
 }
 
-// EchoServiceCap_upper_Params_List is a list of EchoServiceCap_upper_Params.
-type EchoServiceCap_upper_Params_List = capnp.StructList[EchoServiceCap_upper_Params]
+// EchoService_latest_Results_List is a list of EchoService_latest_Results.
+type EchoService_latest_Results_List = capnp.StructList[EchoService_latest_Results]
 
-// NewEchoServiceCap_upper_Params creates a new list of EchoServiceCap_upper_Params.
-func NewEchoServiceCap_upper_Params_List(s *capnp.Segment, sz int32) (EchoServiceCap_upper_Params_List, error) {
+// NewEchoService_latest_Results creates a new list of EchoService_latest_Results.
+func NewEchoService_latest_Results_List(s *capnp.Segment, sz int32) (EchoService_latest_Results_List, error) {
 	l, err := capnp.NewCompositeList(s, capnp.ObjectSize{DataSize: 0, PointerCount: 1}, sz)
-	return capnp.StructList[EchoServiceCap_upper_Params](l), err
+	return capnp.StructList[EchoService_latest_Results](l), err
 }
 
-// EchoServiceCap_upper_Params_Future is a wrapper for a EchoServiceCap_upper_Params promised by a client call.
-type EchoServiceCap_upper_Params_Future struct{ *capnp.Future }
+// EchoService_latest_Results_Future is a wrapper for a EchoService_latest_Results promised by a client call.
+type EchoService_latest_Results_Future struct{ *capnp.Future }
 
-func (p EchoServiceCap_upper_Params_Future) Struct() (EchoServiceCap_upper_Params, error) {
+func (p EchoService_latest_Results_Future) Struct() (EchoService_latest_Results, error) {
 	s, err := p.Future.Struct()
-	return EchoServiceCap_upper_Params(s), err
+	return EchoService_latest_Results(s), err
 }
 
-type EchoServiceCap_upper_Results capnp.Struct
+type EchoService_stats_Params capnp.Struct
 
-// EchoServiceCap_upper_Results_TypeID is the unique identifier for the type EchoServiceCap_upper_Results.
-const EchoServiceCap_upper_Results_TypeID = 0x937b812a608f755d
+// EchoService_stats_Params_TypeID is the unique identifier for the type EchoService_stats_Params.
+const EchoService_stats_Params_TypeID = 0xcf6bbf9983d88b8e
 
-func NewEchoServiceCap_upper_Results(s *capnp.Segment) (EchoServiceCap_upper_Results, error) {
-	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 1})
-	return EchoServiceCap_upper_Results(st), err
+func NewEchoService_stats_Params(s *capnp.Segment) (EchoService_stats_Params, error) {
+	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 0})
+	return EchoService_stats_Params(st), err
 }
 
-func NewRootEchoServiceCap_upper_Results(s *capnp.Segment) (EchoServiceCap_upper_Results, error) {
-	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 1})
-	return EchoServiceCap_upper_Results(st), err
+func NewRootEchoService_stats_Params(s *capnp.Segment) (EchoService_stats_Params, error) {
+	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 0})
+	return EchoService_stats_Params(st), err
 }
 
-func ReadRootEchoServiceCap_upper_Results(msg *capnp.Message) (EchoServiceCap_upper_Results, error) {
+func ReadRootEchoService_stats_Params(msg *capnp.Message) (EchoService_stats_Params, error) {
 	root, err := msg.Root()
-	return EchoServiceCap_upper_Results(root.Struct()), err
+	return EchoService_stats_Params(root.Struct()), err
 }
 
-func (s EchoServiceCap_upper_Results) String() string {
-	str, _ := text.Marshal(0x937b812a608f755d, capnp.Struct(s))
+func (s EchoService_stats_Params) String() string {
+	str, _ := text.Marshal(0xcf6bbf9983d88b8e, capnp.Struct(s))
 	return str
 }
 
-func (s EchoServiceCap_upper_Results) EncodeAsPtr(seg *capnp.Segment) capnp.Ptr {
+func (s EchoService_stats_Params) EncodeAsPtr(seg *capnp.Segment) capnp.Ptr {
 	return capnp.Struct(s).EncodeAsPtr(seg)
 }
 
-func (EchoServiceCap_upper_Results) DecodeFromPtr(p capnp.Ptr) EchoServiceCap_upper_Results {
-	return EchoServiceCap_upper_Results(capnp.Struct{}.DecodeFromPtr(p))
+func (EchoService_stats_Params) DecodeFromPtr(p capnp.Ptr) EchoService_stats_Params {
+	return EchoService_stats_Params(capnp.Struct{}.DecodeFromPtr(p))
 }
 
-func (s EchoServiceCap_upper_Results) ToPtr() capnp.Ptr {
+func (s EchoService_stats_Params) ToPtr() capnp.Ptr {
 	return capnp.Struct(s).ToPtr()
 }
-func (s EchoServiceCap_upper_Results) IsValid() bool {
+func (s EchoService_stats_Params) IsValid() bool {
 	return capnp.Struct(s).IsValid()
 }
 
-func (s EchoServiceCap_upper_Results) Message() *capnp.Message {
+func (s EchoService_stats_Params) Message() *capnp.Message {
 	return capnp.Struct(s).Message()
 }
 
-func (s EchoServiceCap_upper_Results) Segment() *capnp.Segment {
+func (s EchoService_stats_Params) Segment() *capnp.Segment {
 	return capnp.Struct(s).Segment()
 }
-func (s EchoServiceCap_upper_Results) UpperText() (string, error) {
-	p, err := capnp.Struct(s).Ptr(0)
-	return p.Text(), err
+
+// EchoService_stats_Params_List is a list of EchoService_stats_Params.
+type EchoService_stats_Params_List = capnp.StructList[EchoService_stats_Params]
+
+// NewEchoService_stats_Params creates a new list of EchoService_stats_Params.
+func NewEchoService_stats_Params_List(s *capnp.Segment, sz int32) (EchoService_stats_Params_List, error) {
+	l, err := capnp.NewCompositeList(s, capnp.ObjectSize{DataSize: 0, PointerCount: 0}, sz)
+	return capnp.StructList[EchoService_stats_Params](l), err
 }
 
-func (s EchoServiceCap_upper_Results) HasUpperText() bool {
-	return capnp.Struct(s).HasPtr(0)
-}
+// EchoService_stats_Params_Future is a wrapper for a EchoService_stats_Params promised by a client call.
+type EchoService_stats_Params_Future struct{ *capnp.Future }
 
-func (s EchoServiceCap_upper_Results) UpperTextBytes() ([]byte, error) {
-	p, err := capnp.Struct(s).Ptr(0)
-	return p.TextBytes(), err
-}
-
-func (s EchoServiceCap_upper_Results) SetUpperText(v string) error {
-	return capnp.Struct(s).SetText(0, v)
-}
-
-// EchoServiceCap_upper_Results_List is a list of EchoServiceCap_upper_Results.
-type EchoServiceCap_upper_Results_List = capnp.StructList[EchoServiceCap_upper_Results]
-
-// NewEchoServiceCap_upper_Results creates a new list of EchoServiceCap_upper_Results.
-func NewEchoServiceCap_upper_Results_List(s *capnp.Segment, sz int32) (EchoServiceCap_upper_Results_List, error) {
-	l, err := capnp.NewCompositeList(s, capnp.ObjectSize{DataSize: 0, PointerCount: 1}, sz)
-	return capnp.StructList[EchoServiceCap_upper_Results](l), err
-}
-
-// EchoServiceCap_upper_Results_Future is a wrapper for a EchoServiceCap_upper_Results promised by a client call.
-type EchoServiceCap_upper_Results_Future struct{ *capnp.Future }
-
-func (p EchoServiceCap_upper_Results_Future) Struct() (EchoServiceCap_upper_Results, error) {
+func (p EchoService_stats_Params_Future) Struct() (EchoService_stats_Params, error) {
 	s, err := p.Future.Struct()
-	return EchoServiceCap_upper_Results(s), err
+	return EchoService_stats_Params(s), err
 }
 
-type EchoServiceCap_reverse_Params capnp.Struct
+type EchoService_stats_Results capnp.Struct
 
-// EchoServiceCap_reverse_Params_TypeID is the unique identifier for the type EchoServiceCap_reverse_Params.
-const EchoServiceCap_reverse_Params_TypeID = 0xebf815997dbc610e
+// EchoService_stats_Results_TypeID is the unique identifier for the type EchoService_stats_Results.
+const EchoService_stats_Results_TypeID = 0xda5279fc7be4434e
 
-func NewEchoServiceCap_reverse_Params(s *capnp.Segment) (EchoServiceCap_reverse_Params, error) {
+func NewEchoService_stats_Results(s *capnp.Segment) (EchoService_stats_Results, error) {
 	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 1})
-	return EchoServiceCap_reverse_Params(st), err
+	return EchoService_stats_Results(st), err
 }
 
-func NewRootEchoServiceCap_reverse_Params(s *capnp.Segment) (EchoServiceCap_reverse_Params, error) {
+func NewRootEchoService_stats_Results(s *capnp.Segment) (EchoService_stats_Results, error) {
 	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 1})
-	return EchoServiceCap_reverse_Params(st), err
+	return EchoService_stats_Results(st), err
 }
 
-func ReadRootEchoServiceCap_reverse_Params(msg *capnp.Message) (EchoServiceCap_reverse_Params, error) {
+func ReadRootEchoService_stats_Results(msg *capnp.Message) (EchoService_stats_Results, error) {
 	root, err := msg.Root()
-	return EchoServiceCap_reverse_Params(root.Struct()), err
+	return EchoService_stats_Results(root.Struct()), err
 }
 
-func (s EchoServiceCap_reverse_Params) String() string {
-	str, _ := text.Marshal(0xebf815997dbc610e, capnp.Struct(s))
+func (s EchoService_stats_Results) String() string {
+	str, _ := text.Marshal(0xda5279fc7be4434e, capnp.Struct(s))
 	return str
 }
 
-func (s EchoServiceCap_reverse_Params) EncodeAsPtr(seg *capnp.Segment) capnp.Ptr {
+func (s EchoService_stats_Results) EncodeAsPtr(seg *capnp.Segment) capnp.Ptr {
 	return capnp.Struct(s).EncodeAsPtr(seg)
 }
 
-func (EchoServiceCap_reverse_Params) DecodeFromPtr(p capnp.Ptr) EchoServiceCap_reverse_Params {
-	return EchoServiceCap_reverse_Params(capnp.Struct{}.DecodeFromPtr(p))
+func (EchoService_stats_Results) DecodeFromPtr(p capnp.Ptr) EchoService_stats_Results {
+	return EchoService_stats_Results(capnp.Struct{}.DecodeFromPtr(p))
 }
 
-func (s EchoServiceCap_reverse_Params) ToPtr() capnp.Ptr {
+func (s EchoService_stats_Results) ToPtr() capnp.Ptr {
 	return capnp.Struct(s).ToPtr()
 }
-func (s EchoServiceCap_reverse_Params) IsValid() bool {
+func (s EchoService_stats_Results) IsValid() bool {
 	return capnp.Struct(s).IsValid()
 }
 
-func (s EchoServiceCap_reverse_Params) Message() *capnp.Message {
+func (s EchoService_stats_Results) Message() *capnp.Message {
 	return capnp.Struct(s).Message()
 }
 
-func (s EchoServiceCap_reverse_Params) Segment() *capnp.Segment {
+func (s EchoService_stats_Results) Segment() *capnp.Segment {
 	return capnp.Struct(s).Segment()
 }
-func (s EchoServiceCap_reverse_Params) Text() (string, error) {
+func (s EchoService_stats_Results) Stats() (EchoStats, error) {
 	p, err := capnp.Struct(s).Ptr(0)
-	return p.Text(), err
+	return EchoStats(p.Struct()), err
 }
 
-func (s EchoServiceCap_reverse_Params) HasText() bool {
+func (s EchoService_stats_Results) HasStats() bool {
 	return capnp.Struct(s).HasPtr(0)
 }
 
-func (s EchoServiceCap_reverse_Params) TextBytes() ([]byte, error) {
-	p, err := capnp.Struct(s).Ptr(0)
-	return p.TextBytes(), err
+func (s EchoService_stats_Results) SetStats(v EchoStats) error {
+	return capnp.Struct(s).SetPtr(0, capnp.Struct(v).ToPtr())
 }
 
-func (s EchoServiceCap_reverse_Params) SetText(v string) error {
-	return capnp.Struct(s).SetText(0, v)
+// NewStats sets the stats field to a newly
+// allocated EchoStats struct, preferring placement in s's segment.
+func (s EchoService_stats_Results) NewStats() (EchoStats, error) {
+	ss, err := NewEchoStats(capnp.Struct(s).Segment())
+	if err != nil {
+		return EchoStats{}, err
+	}
+	err = capnp.Struct(s).SetPtr(0, capnp.Struct(ss).ToPtr())
+	return ss, err
 }
 
-// EchoServiceCap_reverse_Params_List is a list of EchoServiceCap_reverse_Params.
-type EchoServiceCap_reverse_Params_List = capnp.StructList[EchoServiceCap_reverse_Params]
+// EchoService_stats_Results_List is a list of EchoService_stats_Results.
+type EchoService_stats_Results_List = capnp.StructList[EchoService_stats_Results]
 
-// NewEchoServiceCap_reverse_Params creates a new list of EchoServiceCap_reverse_Params.
-func NewEchoServiceCap_reverse_Params_List(s *capnp.Segment, sz int32) (EchoServiceCap_reverse_Params_List, error) {
+// NewEchoService_stats_Results creates a new list of EchoService_stats_Results.
+func NewEchoService_stats_Results_List(s *capnp.Segment, sz int32) (EchoService_stats_Results_List, error) {
 	l, err := capnp.NewCompositeList(s, capnp.ObjectSize{DataSize: 0, PointerCount: 1}, sz)
-	return capnp.StructList[EchoServiceCap_reverse_Params](l), err
+	return capnp.StructList[EchoService_stats_Results](l), err
 }
 
-// EchoServiceCap_reverse_Params_Future is a wrapper for a EchoServiceCap_reverse_Params promised by a client call.
-type EchoServiceCap_reverse_Params_Future struct{ *capnp.Future }
+// EchoService_stats_Results_Future is a wrapper for a EchoService_stats_Results promised by a client call.
+type EchoService_stats_Results_Future struct{ *capnp.Future }
 
-func (p EchoServiceCap_reverse_Params_Future) Struct() (EchoServiceCap_reverse_Params, error) {
+func (p EchoService_stats_Results_Future) Struct() (EchoService_stats_Results, error) {
 	s, err := p.Future.Struct()
-	return EchoServiceCap_reverse_Params(s), err
+	return EchoService_stats_Results(s), err
 }
 
-type EchoServiceCap_reverse_Results capnp.Struct
-
-// EchoServiceCap_reverse_Results_TypeID is the unique identifier for the type EchoServiceCap_reverse_Results.
-const EchoServiceCap_reverse_Results_TypeID = 0xbc5448df6bee5d37
-
-func NewEchoServiceCap_reverse_Results(s *capnp.Segment) (EchoServiceCap_reverse_Results, error) {
-	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 1})
-	return EchoServiceCap_reverse_Results(st), err
+func (p EchoService_stats_Results_Future) Stats() EchoStats_Future {
+	return EchoStats_Future{Future: p.Future.Field(0, nil)}
 }
 
-func NewRootEchoServiceCap_reverse_Results(s *capnp.Segment) (EchoServiceCap_reverse_Results, error) {
-	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 1})
-	return EchoServiceCap_reverse_Results(st), err
-}
-
-func ReadRootEchoServiceCap_reverse_Results(msg *capnp.Message) (EchoServiceCap_reverse_Results, error) {
-	root, err := msg.Root()
-	return EchoServiceCap_reverse_Results(root.Struct()), err
-}
-
-func (s EchoServiceCap_reverse_Results) String() string {
-	str, _ := text.Marshal(0xbc5448df6bee5d37, capnp.Struct(s))
-	return str
-}
-
-func (s EchoServiceCap_reverse_Results) EncodeAsPtr(seg *capnp.Segment) capnp.Ptr {
-	return capnp.Struct(s).EncodeAsPtr(seg)
-}
-
-func (EchoServiceCap_reverse_Results) DecodeFromPtr(p capnp.Ptr) EchoServiceCap_reverse_Results {
-	return EchoServiceCap_reverse_Results(capnp.Struct{}.DecodeFromPtr(p))
-}
-
-func (s EchoServiceCap_reverse_Results) ToPtr() capnp.Ptr {
-	return capnp.Struct(s).ToPtr()
-}
-func (s EchoServiceCap_reverse_Results) IsValid() bool {
-	return capnp.Struct(s).IsValid()
-}
-
-func (s EchoServiceCap_reverse_Results) Message() *capnp.Message {
-	return capnp.Struct(s).Message()
-}
-
-func (s EchoServiceCap_reverse_Results) Segment() *capnp.Segment {
-	return capnp.Struct(s).Segment()
-}
-func (s EchoServiceCap_reverse_Results) ReverseText() (string, error) {
-	p, err := capnp.Struct(s).Ptr(0)
-	return p.Text(), err
-}
-
-func (s EchoServiceCap_reverse_Results) HasReverseText() bool {
-	return capnp.Struct(s).HasPtr(0)
-}
-
-func (s EchoServiceCap_reverse_Results) ReverseTextBytes() ([]byte, error) {
-	p, err := capnp.Struct(s).Ptr(0)
-	return p.TextBytes(), err
-}
-
-func (s EchoServiceCap_reverse_Results) SetReverseText(v string) error {
-	return capnp.Struct(s).SetText(0, v)
-}
-
-// EchoServiceCap_reverse_Results_List is a list of EchoServiceCap_reverse_Results.
-type EchoServiceCap_reverse_Results_List = capnp.StructList[EchoServiceCap_reverse_Results]
-
-// NewEchoServiceCap_reverse_Results creates a new list of EchoServiceCap_reverse_Results.
-func NewEchoServiceCap_reverse_Results_List(s *capnp.Segment, sz int32) (EchoServiceCap_reverse_Results_List, error) {
-	l, err := capnp.NewCompositeList(s, capnp.ObjectSize{DataSize: 0, PointerCount: 1}, sz)
-	return capnp.StructList[EchoServiceCap_reverse_Results](l), err
-}
-
-// EchoServiceCap_reverse_Results_Future is a wrapper for a EchoServiceCap_reverse_Results promised by a client call.
-type EchoServiceCap_reverse_Results_Future struct{ *capnp.Future }
-
-func (p EchoServiceCap_reverse_Results_Future) Struct() (EchoServiceCap_reverse_Results, error) {
-	s, err := p.Future.Struct()
-	return EchoServiceCap_reverse_Results(s), err
-}
-
-const schema_cd6ed2180540008c = "x\xda\xa4\x92Oh\x13A\x14\x87\x7f\xef\xcd\xae+\xb8" +
-	"\xb5\x0ck\xa0\x8aP\x0a\x151\xd8\xa2\xf5\x10,H\x96" +
-	"\x86\x82\x14\x84\x9d\x18\x05\x0f\x05\xd70PQ\x9be\x93" +
-	"\xd4\x80\x88xT\x04\x85\x9c\x0a\xde<\x0a\xde<\x08\xbd" +
-	"x\xea)\x08\x01\xcf\x82\xe0IP\xbc\xf9\x07Y\x99m" +
-	"\xba\x8cVJ\xa1\xb7\x85\xf9\xf8\xf6\xcd\xfb\xe6\xccI\x0a" +
-	"\x9d\xb3c\xef\x04X\x9dv\x0fd\xcb\xdd\xa7\xd7\xcb\x0f" +
-	"\xef\xf5!\x8f\x11\xe0\x92\x07\x9c\x1b\xd0\x02\x81\x82\xf7T" +
-	"\x05e\xbf.\xd4\xee\x1eo\xbdX\xb7\x81\x1f4g\x00" +
-	"b\x03\xbc*\xf5\xddg\x8fZ/m`\x8a\xe7\x0dp" +
-	"*\x07*\x8f?\xd6Nl\xfao \x0f\x89\xdfOB" +
-	"wb\xb8:\x00\x05\x97x\x18\\c\x0f\x08\xae\xf0f" +
-	"00_Ye\xf9\xcb\xad\x0f\x17\x1b\x1b\xb6\xeb5\xd7" +
-	"\x8d\xebm\xee:\x1co\xdc_/}\xffl\x03\x9fx" +
-	"\xc9\x00\xdf\x0c\xf0\xb5\x7fU=\xaf\x0c\x7fZ\xc7R\xe4" +
-	"\xb3\x1c\x15U\xccd\xba\xb9\xd2\x9am\xc6\x89\xb3\x9a\xcc" +
-	"/6WZ\x97u\xbav\xb3\xa9kq2\xdbM\x12" +
-	"\x9dN\xd7u\xbb{\xbb\xd3\x86r\x84\x038\x04\xc8\xb1" +
-	":\xa0|Aj\x82)\xcb\xa9\x86\xee\x81:\xe4\x83\xc9" +
-	"\x07\x15R\xb1Sj\x8e\xa6\xa3\xc98\x8d\xef\xb4me" +
-	"\x19P\x07\x05\xa9#L\xe3\x1d\xdd\xdb\xbb\xab^\xdd\x1a" +
-	"\xd0\x96-Y\xf3\x19\xa8\xa1{\x1d\x00;\x9c\xfc\xaf\x93" +
-	"\x92\x88H\xf9\xc2\x05\x8a\xce\xb4\xddS\xaa2X.z" +
-	"T,\xd5z,\xe7\xe7\xc0r\xc6#.\x8a\xd0v;" +
-	"9\xb5\x00\x96%o\xdc\xfc6\xa4\xc9|c!=H" +
-	"\xf5\x9aN\xdb:\xa4\x88h\xb7\x0e#nT\x82\xfe\xba" +
-	"\xe9\x0d\xeb\xa6#\xae\x01\xef\x7f\xfb\xdbE\x1c\xe55\x80" +
-	"\xfd\xf6\xd8z0\xd5h\xcfq\xff\x04\x00\x00\xff\xff\xd4" +
-	"\x97\xe6O"
+const schema_cd6ed2180540008c = "x\xda\xac\x92Ah\xd3P\x18\xc7\xbf\xff\x97\xd4\x04\xd6" +
+	"\xd2\x85t8\xbc\x94\x8d\x0e]\xa1\xa3\xab\x82\xac -" +
+	"JAv\xd0\xbe\xe8]B\x08L\xb6\xb6\xa3I\xddD" +
+	"\x0f\xc2\xf0\xa4\xd3\x93\xa0\x87\xddu\xa0\x9e\x04\x1d\xe2@" +
+	"\xc1\x9dD\x10\x06*xP\xf4\xe0A<\x8a\xa0D^" +
+	"j\xb2\xa8H/\xbb=\xde\xf7{\xff\xff\xf7\xfe\xdfW" +
+	"\x9eF]\x9d\xce\xecW\x89E9\xb5'\xb8\xf9\xfc\xf0" +
+	"\xb3\xeb\xf7r\x97\xc8\xd8\x0b\"U#:\xf8\x1dE\x90" +
+	"\x1a\xb4\x8eL\x1c\xbd\xb1\xae\xdf\xeeWR\x90\xa5\xf7\xa8" +
+	"\x80`~F\x8d\x10\xac>\xbds\xdc~|\xf2a\x12" +
+	"\xc8\xf0\xb8\x04FX\x02\xd7\xae\xbc^\xb9\xb59\xff2" +
+	"\xa1=#\xebj\xb0\xf9um\xf6\xfe\xd2\xf86\x19C" +
+	"\xca\xcf\xab\xf5\xd4\xe8\xab\xf6\x0b\x829\xc6\x1b\xe6$k" +
+	"D\xe6\x04o\x99k\xf2\x14\x9c8\xf6\xf1\xc2\x8f\xf3\xd6" +
+	"\xdb\xa4\xcbe.J\x97\xd5\xd0\xe5\xcc\xcaVA\x7f\xb4" +
+	"\xf1!\x09\xdc\xe5}\x12x\x10\x02\x8d\x8b\xf3\xdf\x9e|" +
+	"\xb2\xbe\x90\x18\x02\"\xb7\x903\xb7y\xdd|\x17\x1a\xbe" +
+	"\xe1%*\x05\xae3\xd7\x99r\xecE\xa5\xbdXm8" +
+	"s\x9dSn\xf7\xdcY\xc7\x9dZ\xb0}\xd7\xf3\x0bM" +
+	";\xdb\xb5[\xde \xccr\xf3^o\xc1\xf7\x84\xaa\xa8" +
+	"D*\x88\x8c\xcc,\x91H+\x10\xa3\x8c\xf0\xf9iw" +
+	"\xd9'\"\xa4\x89\x91&\xfcWR\xde\x17,\xd7\xebi" +
+	"\xbb$\xe8\xf9\xb6\xef\x15\x9avWK\xfe\x04\x11U\xeb" +
+	"cM@\xa4\x95\x14Q\x1c/\xa2q\x1b\xa2Hl4" +
+	"4 ^\x1eD\xbbb\xccT\x89\x8d\x92\x06\x8e\x87\x8f" +
+	"h\x80\xc6X\x85\xd8\x18\xd1\xb2\xd2\xb3\x8eZ?\xac:" +
+	"\xf2aGu41\xa8i\xcb\xf5\xb2\x7f\xe7Z!\x12" +
+	"\xba\x02\x91\xe3\xdfB\x18\xde\x198\x01\xc3\x83\xb2m\xda" +
+	"][i\xfd\xa1Y\xdc\xd1\xcc\xfa\xee\xb2\xffO\xa6q" +
+	"ZY\xe9(\xb3\xd2\xe3\xd7\x93U\"QP \xca\x0c" +
+	" \x07yW\x92]\x1eP \x0eq\xf4\xefH3\xef" +
+	"tzm\x1f:1t\xc2\xaf\x00\x00\x00\xff\xff;u" +
+	"\xf9\xa5"
 
 func init() {
 	schemas.Register(schema_cd6ed2180540008c,
-		0x937b812a608f755d,
-		0x99a36f1c77433dfb,
-		0xab6f8990059315ae,
-		0xb90cc72543e28a37,
-		0xbc5448df6bee5d37,
-		0xebf815997dbc610e,
-		0xfad237009c515693)
+		0x8014ae8fc337c698,
+		0xa808aa9542253d6d,
+		0xb84fbc6148a9c28d,
+		0xcf6bbf9983d88b8e,
+		0xd52277af4a9defbf,
+		0xda5279fc7be4434e,
+		0xe2bab90824c7835f,
+		0xed52e5bef76b7c45)
 }

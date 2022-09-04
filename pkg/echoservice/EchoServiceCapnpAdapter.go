@@ -13,41 +13,47 @@ import (
 	echocap "github.com/hiveot/echorpc/capnp/go"
 )
 
-// cap'n'proto adapter for echo service
-// EchoServiceCapnpAdapter implements the generated echocap.EchoServiceCap_Server
+// EchoServiceCapnpAdapter cap'n'proto adapter for echo service
+// EchoServiceCapnpAdapter implements the generated echocap.EchoService_Server
 // interface. Copy the interface method when building the adapter.
 type EchoServiceCapnpAdapter struct {
 	svc *EchoService
 }
 
 func (adapter *EchoServiceCapnpAdapter) Echo(
-	_ context.Context, call echocap.EchoServiceCap_echo) error {
+	_ context.Context, call echocap.EchoService_echo) error {
 	// Ack is optional for simple functions like these.
 	call.Ack()
 	text, _ := call.Args().Text()
 	echoText, err := adapter.svc.Echo(text)
 	res, _ := call.AllocResults()
-	res.SetEchoText(echoText)
+	err = res.SetEchoText(echoText)
 	return err
 }
 
-func (adapter *EchoServiceCapnpAdapter) Reverse(
-	_ context.Context, call echocap.EchoServiceCap_reverse) error {
+// Latest returns the latest echo
+func (adapter *EchoServiceCapnpAdapter) Latest(
+	_ context.Context, call echocap.EchoService_latest) error {
+	// Ack is optional for simple functions like these.
 	call.Ack()
-	text, _ := call.Args().Text()
-	revText, err := adapter.svc.Reverse(text)
+	latestText, err := adapter.svc.Latest()
 	res, _ := call.AllocResults()
-	res.SetReverseText(revText)
+	err = res.SetEchoText(latestText)
 	return err
 }
 
-func (adapter *EchoServiceCapnpAdapter) Upper(
-	_ context.Context, call echocap.EchoServiceCap_upper) error {
-	call.Ack()
-	text, _ := call.Args().Text()
-	upText, err := adapter.svc.Upper(text)
+func (adapter *EchoServiceCapnpAdapter) Stats(
+	_ context.Context, call echocap.EchoService_stats) error {
+	latestText, echoCount := adapter.svc.Stats()
+
+	arena := capnp.SingleSegment(nil)
+	_, seg, err := capnp.NewMessage(arena)
+	stats, err := echocap.NewRootEchoStats(seg)
+
+	err = stats.SetLatest(latestText)
+	stats.SetCount(uint32(echoCount))
 	res, _ := call.AllocResults()
-	res.SetUpperText(upText)
+	err = res.SetStats(stats)
 	return err
 }
 
@@ -59,7 +65,7 @@ func EchoServiceCapnpStart(address string, isUDS bool) {
 
 	network := "tcp"
 	if isUDS {
-		os.Remove(address)
+		_ = os.Remove(address)
 		network = "unix"
 	}
 	listener, err := net.Listen(network, address)
@@ -69,7 +75,7 @@ func EchoServiceCapnpStart(address string, isUDS bool) {
 
 	// create the service main handler
 	echoSvc := NewEchoService()
-	main := echocap.EchoServiceCap_ServerToClient(&EchoServiceCapnpAdapter{
+	main := echocap.EchoService_ServerToClient(&EchoServiceCapnpAdapter{
 		svc: echoSvc,
 	})
 
