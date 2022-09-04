@@ -16,6 +16,7 @@ To run the test, run make testgrpc and make testcapnp
 Added a get stats method that returns the latest echo and nr of calls. Each call below is therefore two calls, one to post echo and another too retrieve stats.
 Unexpectedly, http is fastest for small payloads. 
 
+```
 --- test with Hello World payload ---
 Invoking echo directly
 1000 calls using direct call: 2 microsec
@@ -52,7 +53,7 @@ Invoking echo directly
 1000 calls using http  on :8990: 4500 millisec
 1000 calls using gRPC  on :8991: 840 millisec
 1000 calls using Capnp on :8992: 710 millisec
-
+```
 
 ## 2022-08-31
 Initial crude results on an i5-4570S CPU @ 2.90GHz:
