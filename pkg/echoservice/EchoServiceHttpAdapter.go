@@ -45,6 +45,7 @@ func (adapter *EchoServiceHttpAdapter) HandleStats(resp http.ResponseWriter, req
 	params["latest"] = latestText
 	params["count"] = count
 	respMsg, _ := json.Marshal(params)
+	//req.Close
 	resp.Write(respMsg)
 }
 

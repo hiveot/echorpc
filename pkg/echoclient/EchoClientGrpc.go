@@ -35,18 +35,16 @@ func InvokeEchoGrpc(address string, isUDS bool, text string, count int) {
 	t1 := time.Now()
 	for i := 0; i < count; i++ {
 		response, err := client.Echo(ctx, &pb.TextParam{Text: text})
-		_, _ = client.Stats(ctx, &emptypb.Empty{})
+		if err == nil {
+			_, err = client.Stats(ctx, &emptypb.Empty{})
+		}
 		if err != nil {
-			log.Fatalf("error echo response: %s", err)
+			log.Fatalf("error echo/stats response: %s", err)
 		}
 		_ = response
-
-		// fmt.Println("Response:", response)
 	}
 	d1 := time.Since(t1)
 	msec := d1.Milliseconds() / 10 * 10
 	fmt.Printf("%d calls using gRPC  on %s: %d millisec\n", count, address, msec)
 	cancel()
-
-	// return response.Text, err
 }
