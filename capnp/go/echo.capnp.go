@@ -769,48 +769,318 @@ func (p EchoService_stats_Results_Future) Stats() EchoStats_Future {
 	return EchoStats_Future{Future: p.Future.Field(0, nil)}
 }
 
-const schema_cd6ed2180540008c = "x\xda\xac\x92Ah\xd3P\x18\xc7\xbf\xff\x97\xd4\x04\xd6" +
-	"\xd2\x85t8\xbc\x94\x8d\x0e]\xa1\xa3\xab\x82\xac -" +
-	"JAv\xd0\xbe\xe8]B\x08L\xb6\xb6\xa3I\xddD" +
-	"\x0f\xc2\xf0\xa4\xd3\x93\xa0\x87\xddu\xa0\x9e\x04\x1d\xe2@" +
-	"\xc1\x9dD\x10\x06*xP\xf4\xe0A<\x8a\xa0D^" +
-	"j\xb2\xa8H/\xbb=\xde\xf7{\xff\xff\xf7\xfe\xdfW" +
-	"\x9eF]\x9d\xce\xecW\x89E9\xb5'\xb8\xf9\xfc\xf0" +
-	"\xb3\xeb\xf7r\x97\xc8\xd8\x0b\"U#:\xf8\x1dE\x90" +
-	"\x1a\xb4\x8eL\x1c\xbd\xb1\xae\xdf\xeeWR\x90\xa5\xf7\xa8" +
-	"\x80`~F\x8d\x10\xac>\xbds\xdc~|\xf2a\x12" +
-	"\xc8\xf0\xb8\x04FX\x02\xd7\xae\xbc^\xb9\xb59\xff2" +
-	"\xa1=#\xebj\xb0\xf9um\xf6\xfe\xd2\xf86\x19C" +
-	"\xca\xcf\xab\xf5\xd4\xe8\xab\xf6\x0b\x829\xc6\x1b\xe6$k" +
-	"D\xe6\x04o\x99k\xf2\x14\x9c8\xf6\xf1\xc2\x8f\xf3\xd6" +
-	"\xdb\xa4\xcbe.J\x97\xd5\xd0\xe5\xcc\xcaVA\x7f\xb4" +
-	"\xf1!\x09\xdc\xe5}\x12x\x10\x02\x8d\x8b\xf3\xdf\x9e|" +
-	"\xb2\xbe\x90\x18\x02\"\xb7\x903\xb7y\xdd|\x17\x1a\xbe" +
-	"\xe1%*\x05\xae3\xd7\x99r\xecE\xa5\xbdXm8" +
-	"s\x9dSn\xf7\xdcY\xc7\x9dZ\xb0}\xd7\xf3\x0bM" +
-	";\xdb\xb5[\xde \xccr\xf3^o\xc1\xf7\x84\xaa\xa8" +
-	"D*\x88\x8c\xcc,\x91H+\x10\xa3\x8c\xf0\xf9iw" +
-	"\xd9'\"\xa4\x89\x91&\xfcWR\xde\x17,\xd7\xebi" +
-	"\xbb$\xe8\xf9\xb6\xef\x15\x9avWK\xfe\x04\x11U\xeb" +
-	"cM@\xa4\x95\x14Q\x1c/\xa2q\x1b\xa2Hl4" +
-	"4 ^\x1eD\xbbb\xccT\x89\x8d\x92\x06\x8e\x87\x8f" +
-	"h\x80\xc6X\x85\xd8\x18\xd1\xb2\xd2\xb3\x8eZ?\xac:" +
-	"\xf2aGu41\xa8i\xcb\xf5\xb2\x7f\xe7Z!\x12" +
-	"\xba\x02\x91\xe3\xdfB\x18\xde\x198\x01\xc3\x83\xb2m\xda" +
-	"][i\xfd\xa1Y\xdc\xd1\xcc\xfa\xee\xb2\xffO\xa6q" +
-	"ZY\xe9(\xb3\xd2\xe3\xd7\x93U\"QP \xca\x0c" +
-	" \x07yW\x92]\x1eP \x0eq\xf4\xefH3\xef" +
-	"tzm\x1f:1t\xc2\xaf\x00\x00\x00\xff\xff;u" +
-	"\xf9\xa5"
+type EchoBootstrap capnp.Client
+
+// EchoBootstrap_TypeID is the unique identifier for the type EchoBootstrap.
+const EchoBootstrap_TypeID = 0xafbd6666a784102e
+
+func (c EchoBootstrap) GetEcho(ctx context.Context, params func(EchoBootstrap_getEcho_Params) error) (EchoBootstrap_getEcho_Results_Future, capnp.ReleaseFunc) {
+	s := capnp.Send{
+		Method: capnp.Method{
+			InterfaceID:   0xafbd6666a784102e,
+			MethodID:      0,
+			InterfaceName: "echo.capnp:EchoBootstrap",
+			MethodName:    "getEcho",
+		},
+	}
+	if params != nil {
+		s.ArgsSize = capnp.ObjectSize{DataSize: 0, PointerCount: 0}
+		s.PlaceArgs = func(s capnp.Struct) error { return params(EchoBootstrap_getEcho_Params(s)) }
+	}
+	ans, release := capnp.Client(c).SendCall(ctx, s)
+	return EchoBootstrap_getEcho_Results_Future{Future: ans.Future()}, release
+}
+
+func (c EchoBootstrap) AddRef() EchoBootstrap {
+	return EchoBootstrap(capnp.Client(c).AddRef())
+}
+
+func (c EchoBootstrap) Release() {
+	capnp.Client(c).Release()
+}
+
+func (c EchoBootstrap) EncodeAsPtr(seg *capnp.Segment) capnp.Ptr {
+	return capnp.Client(c).EncodeAsPtr(seg)
+}
+
+func (EchoBootstrap) DecodeFromPtr(p capnp.Ptr) EchoBootstrap {
+	return EchoBootstrap(capnp.Client{}.DecodeFromPtr(p))
+}
+
+func (c EchoBootstrap) IsValid() bool {
+	return capnp.Client(c).IsValid()
+}
+
+// A EchoBootstrap_Server is a EchoBootstrap with a local implementation.
+type EchoBootstrap_Server interface {
+	GetEcho(context.Context, EchoBootstrap_getEcho) error
+}
+
+// EchoBootstrap_NewServer creates a new Server from an implementation of EchoBootstrap_Server.
+func EchoBootstrap_NewServer(s EchoBootstrap_Server) *server.Server {
+	c, _ := s.(server.Shutdowner)
+	return server.New(EchoBootstrap_Methods(nil, s), s, c)
+}
+
+// EchoBootstrap_ServerToClient creates a new Client from an implementation of EchoBootstrap_Server.
+// The caller is responsible for calling Release on the returned Client.
+func EchoBootstrap_ServerToClient(s EchoBootstrap_Server) EchoBootstrap {
+	return EchoBootstrap(capnp.NewClient(EchoBootstrap_NewServer(s)))
+}
+
+// EchoBootstrap_Methods appends Methods to a slice that invoke the methods on s.
+// This can be used to create a more complicated Server.
+func EchoBootstrap_Methods(methods []server.Method, s EchoBootstrap_Server) []server.Method {
+	if cap(methods) == 0 {
+		methods = make([]server.Method, 0, 1)
+	}
+
+	methods = append(methods, server.Method{
+		Method: capnp.Method{
+			InterfaceID:   0xafbd6666a784102e,
+			MethodID:      0,
+			InterfaceName: "echo.capnp:EchoBootstrap",
+			MethodName:    "getEcho",
+		},
+		Impl: func(ctx context.Context, call *server.Call) error {
+			return s.GetEcho(ctx, EchoBootstrap_getEcho{call})
+		},
+	})
+
+	return methods
+}
+
+// EchoBootstrap_getEcho holds the state for a server call to EchoBootstrap.getEcho.
+// See server.Call for documentation.
+type EchoBootstrap_getEcho struct {
+	*server.Call
+}
+
+// Args returns the call's arguments.
+func (c EchoBootstrap_getEcho) Args() EchoBootstrap_getEcho_Params {
+	return EchoBootstrap_getEcho_Params(c.Call.Args())
+}
+
+// AllocResults allocates the results struct.
+func (c EchoBootstrap_getEcho) AllocResults() (EchoBootstrap_getEcho_Results, error) {
+	r, err := c.Call.AllocResults(capnp.ObjectSize{DataSize: 0, PointerCount: 1})
+	return EchoBootstrap_getEcho_Results(r), err
+}
+
+// EchoBootstrap_List is a list of EchoBootstrap.
+type EchoBootstrap_List = capnp.CapList[EchoBootstrap]
+
+// NewEchoBootstrap creates a new list of EchoBootstrap.
+func NewEchoBootstrap_List(s *capnp.Segment, sz int32) (EchoBootstrap_List, error) {
+	l, err := capnp.NewPointerList(s, sz)
+	return capnp.CapList[EchoBootstrap](l), err
+}
+
+type EchoBootstrap_getEcho_Params capnp.Struct
+
+// EchoBootstrap_getEcho_Params_TypeID is the unique identifier for the type EchoBootstrap_getEcho_Params.
+const EchoBootstrap_getEcho_Params_TypeID = 0xcfde8f221e3225b3
+
+func NewEchoBootstrap_getEcho_Params(s *capnp.Segment) (EchoBootstrap_getEcho_Params, error) {
+	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 0})
+	return EchoBootstrap_getEcho_Params(st), err
+}
+
+func NewRootEchoBootstrap_getEcho_Params(s *capnp.Segment) (EchoBootstrap_getEcho_Params, error) {
+	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 0})
+	return EchoBootstrap_getEcho_Params(st), err
+}
+
+func ReadRootEchoBootstrap_getEcho_Params(msg *capnp.Message) (EchoBootstrap_getEcho_Params, error) {
+	root, err := msg.Root()
+	return EchoBootstrap_getEcho_Params(root.Struct()), err
+}
+
+func (s EchoBootstrap_getEcho_Params) String() string {
+	str, _ := text.Marshal(0xcfde8f221e3225b3, capnp.Struct(s))
+	return str
+}
+
+func (s EchoBootstrap_getEcho_Params) EncodeAsPtr(seg *capnp.Segment) capnp.Ptr {
+	return capnp.Struct(s).EncodeAsPtr(seg)
+}
+
+func (EchoBootstrap_getEcho_Params) DecodeFromPtr(p capnp.Ptr) EchoBootstrap_getEcho_Params {
+	return EchoBootstrap_getEcho_Params(capnp.Struct{}.DecodeFromPtr(p))
+}
+
+func (s EchoBootstrap_getEcho_Params) ToPtr() capnp.Ptr {
+	return capnp.Struct(s).ToPtr()
+}
+func (s EchoBootstrap_getEcho_Params) IsValid() bool {
+	return capnp.Struct(s).IsValid()
+}
+
+func (s EchoBootstrap_getEcho_Params) Message() *capnp.Message {
+	return capnp.Struct(s).Message()
+}
+
+func (s EchoBootstrap_getEcho_Params) Segment() *capnp.Segment {
+	return capnp.Struct(s).Segment()
+}
+
+// EchoBootstrap_getEcho_Params_List is a list of EchoBootstrap_getEcho_Params.
+type EchoBootstrap_getEcho_Params_List = capnp.StructList[EchoBootstrap_getEcho_Params]
+
+// NewEchoBootstrap_getEcho_Params creates a new list of EchoBootstrap_getEcho_Params.
+func NewEchoBootstrap_getEcho_Params_List(s *capnp.Segment, sz int32) (EchoBootstrap_getEcho_Params_List, error) {
+	l, err := capnp.NewCompositeList(s, capnp.ObjectSize{DataSize: 0, PointerCount: 0}, sz)
+	return capnp.StructList[EchoBootstrap_getEcho_Params](l), err
+}
+
+// EchoBootstrap_getEcho_Params_Future is a wrapper for a EchoBootstrap_getEcho_Params promised by a client call.
+type EchoBootstrap_getEcho_Params_Future struct{ *capnp.Future }
+
+func (p EchoBootstrap_getEcho_Params_Future) Struct() (EchoBootstrap_getEcho_Params, error) {
+	s, err := p.Future.Struct()
+	return EchoBootstrap_getEcho_Params(s), err
+}
+
+type EchoBootstrap_getEcho_Results capnp.Struct
+
+// EchoBootstrap_getEcho_Results_TypeID is the unique identifier for the type EchoBootstrap_getEcho_Results.
+const EchoBootstrap_getEcho_Results_TypeID = 0xf0417b79c793c63a
+
+func NewEchoBootstrap_getEcho_Results(s *capnp.Segment) (EchoBootstrap_getEcho_Results, error) {
+	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 1})
+	return EchoBootstrap_getEcho_Results(st), err
+}
+
+func NewRootEchoBootstrap_getEcho_Results(s *capnp.Segment) (EchoBootstrap_getEcho_Results, error) {
+	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 1})
+	return EchoBootstrap_getEcho_Results(st), err
+}
+
+func ReadRootEchoBootstrap_getEcho_Results(msg *capnp.Message) (EchoBootstrap_getEcho_Results, error) {
+	root, err := msg.Root()
+	return EchoBootstrap_getEcho_Results(root.Struct()), err
+}
+
+func (s EchoBootstrap_getEcho_Results) String() string {
+	str, _ := text.Marshal(0xf0417b79c793c63a, capnp.Struct(s))
+	return str
+}
+
+func (s EchoBootstrap_getEcho_Results) EncodeAsPtr(seg *capnp.Segment) capnp.Ptr {
+	return capnp.Struct(s).EncodeAsPtr(seg)
+}
+
+func (EchoBootstrap_getEcho_Results) DecodeFromPtr(p capnp.Ptr) EchoBootstrap_getEcho_Results {
+	return EchoBootstrap_getEcho_Results(capnp.Struct{}.DecodeFromPtr(p))
+}
+
+func (s EchoBootstrap_getEcho_Results) ToPtr() capnp.Ptr {
+	return capnp.Struct(s).ToPtr()
+}
+func (s EchoBootstrap_getEcho_Results) IsValid() bool {
+	return capnp.Struct(s).IsValid()
+}
+
+func (s EchoBootstrap_getEcho_Results) Message() *capnp.Message {
+	return capnp.Struct(s).Message()
+}
+
+func (s EchoBootstrap_getEcho_Results) Segment() *capnp.Segment {
+	return capnp.Struct(s).Segment()
+}
+func (s EchoBootstrap_getEcho_Results) Service() EchoService {
+	p, _ := capnp.Struct(s).Ptr(0)
+	return EchoService(p.Interface().Client())
+}
+
+func (s EchoBootstrap_getEcho_Results) HasService() bool {
+	return capnp.Struct(s).HasPtr(0)
+}
+
+func (s EchoBootstrap_getEcho_Results) SetService(v EchoService) error {
+	if !v.IsValid() {
+		return capnp.Struct(s).SetPtr(0, capnp.Ptr{})
+	}
+	seg := s.Segment()
+	in := capnp.NewInterface(seg, seg.Message().AddCap(capnp.Client(v)))
+	return capnp.Struct(s).SetPtr(0, in.ToPtr())
+}
+
+// EchoBootstrap_getEcho_Results_List is a list of EchoBootstrap_getEcho_Results.
+type EchoBootstrap_getEcho_Results_List = capnp.StructList[EchoBootstrap_getEcho_Results]
+
+// NewEchoBootstrap_getEcho_Results creates a new list of EchoBootstrap_getEcho_Results.
+func NewEchoBootstrap_getEcho_Results_List(s *capnp.Segment, sz int32) (EchoBootstrap_getEcho_Results_List, error) {
+	l, err := capnp.NewCompositeList(s, capnp.ObjectSize{DataSize: 0, PointerCount: 1}, sz)
+	return capnp.StructList[EchoBootstrap_getEcho_Results](l), err
+}
+
+// EchoBootstrap_getEcho_Results_Future is a wrapper for a EchoBootstrap_getEcho_Results promised by a client call.
+type EchoBootstrap_getEcho_Results_Future struct{ *capnp.Future }
+
+func (p EchoBootstrap_getEcho_Results_Future) Struct() (EchoBootstrap_getEcho_Results, error) {
+	s, err := p.Future.Struct()
+	return EchoBootstrap_getEcho_Results(s), err
+}
+
+func (p EchoBootstrap_getEcho_Results_Future) Service() EchoService {
+	return EchoService(p.Future.Field(0, nil).Client())
+}
+
+const schema_cd6ed2180540008c = "x\xda\x9c\x93OH\x14o\x18\xc7\x9f\xe7}g\x9d\xf9" +
+	"\xe1\xca\xfa2\xfe\xc8:$\xca\x0a\xb5\xe0\xa6[\x10." +
+	"\xc5n\x1bRx\xa8\x9d\xadK\x87\x88a\x193t]" +
+	"\xd9\xf75\x15+\x03\xbb\xf5G\"\x82<x\x8cR(" +
+	"\x89.)\x99T\xa4\x10\x84\x10\x08\xd1\xa1C\xd41\xea" +
+	"\xd6\xa5\x98xg\xf6\xdd\x9d6L\xe86\xcc\xf3\xbc\x9f" +
+	"\xef\xf7\xf9\xd7y\x09\xd3ZW\xc3\x9e\x10\x10\xeb@\xa8" +
+	"\xce\xbd\xb3\xba\xff\xe5\xf4\xc3\xa6\xcb\xc0\xb6!\x80\xa6\x03" +
+	"\xec\xbdHb\x08\x9a[8\xd8\x9e\xb9=o\xdc\xf7#" +
+	"!\x94!\x87$\x10\xd0,\x90\x14\xa0\x1bo\xbcr\xaf" +
+	"\xafoy\x01X=\xfdy-\x1dj~;\xf4\x06\xd0" +
+	"\xbcI^\x9b\xb3D\x070g\xc8\x11\xf3\xb9\xfcr\xaf" +
+	"\xbf\x98;j?=\xfe$\xc8\x9a#m\x92\xf5\xc8c" +
+	"\xdd\xb8\xfanjfe`=`cC\xc65\xf7q" +
+	"{bg\xdb\xf4\x87u`\xdbUd\x99ddd\xe5" +
+	"\xebl\xef\xc2h\xdbF\x8d\xfe]\xb2d>\xf0\xf4\xe7" +
+	"\xc8\x9a\xd9J\xa5\xfe\xb1\xc3\x9f&~\x8c\xe7\xde\x07\xf5" +
+	"\xff\xa31\xa9\xcf\xa8\xd4?3\xb5\x165\x16\x97>\x06" +
+	"\x13\xba\xe8\x0e\x99\xd0\xed%\xf4\\\x18\xf8\xfe\xecs\xee" +
+	"\x0bX\xf5\x88J\xcd\xcb3O\xd1y\xd3\x962\xe6i" +
+	":\x0a\xe8&Wo\xad\x8dO\x1c\xfa\xe6;\xf6Y\x8b" +
+	"\xb4W\xb2^\xd1\x14t\xb8N\xbe\xbf\x18\xcf\xdb\xc3t" +
+	"h8\xd9\x93\xef/\x9epJ\xe7\xcf\xe5\x9d\xf8\xa0-" +
+	"\x1c.\xa2Y;R\xb2\x0b|\xab\xb4\x9c\xd3\xc2G\x06" +
+	"\x05\xb74\xaa\x01h\x08\xc0\x1az\x01\xac0E\xab\x99" +
+	"\xa0\xf7\xfc\xa43&\x00\x00\xc3@0\x0cXA\x922" +
+	"2S,\x0a.J\xf60@\x16\xd1\xd2h\x08\xa0\xd2" +
+	"qT\x850\x96\x01\xc2B\xfa\xe4YG\xc8Wi\xcc" +
+	"\"njO\xfe\x8f\xe6\x1c>\xa2\xff\xa3\xb9Z \x17" +
+	"\xb6\xe0\xd1\xac]\xd2\x83]\xa9\xab-!^v'3" +
+	"\xed\x02\x07\x95\xa8h)\x1f'\xeb\x0c{u\xaa\x99\xa3" +
+	"\xdaNf\xc5\x80\xb0\x1e\x1d\xb1r\x16\xa8\xae\x80u'" +
+	"\x81\xb0\x0e\x1dIeWQm\x15kM\x00a\xff\xeb" +
+	"\x11\xc7kN\xca\x1fP\x1a[<\xe7\x7f\xef\x96_\\" +
+	"\xce\xe1\x91\xdaY&\x00,\x83\xa2\xd5D\xca l\xac" +
+	"n! 6\xc2\x163\x90}\xa0\x85\xdf\x98\xb1*3" +
+	"\"\x9c1\xf1G\xefQ\x81\"RQ\xf6\xca\xa8\xbc\xde" +
+	"\x9d\x04\xb0\xa2\x14\xadN\x82\x88M(\xffuH\x97\xbb" +
+	"(Z\xfb\x88\xaa[1[\xf2\xc5\x91!\x81\x06\x104" +
+	"\x02\x0a\xda\xa6s\x93;3(8@\xd0q\xa6\xeax" +
+	"\x92\xfb\xd5!\xab\x9e> 2\xc0_\x01\x00\x00\xff\xff" +
+	"\x15CU3"
 
 func init() {
 	schemas.Register(schema_cd6ed2180540008c,
 		0x8014ae8fc337c698,
 		0xa808aa9542253d6d,
+		0xafbd6666a784102e,
 		0xb84fbc6148a9c28d,
 		0xcf6bbf9983d88b8e,
+		0xcfde8f221e3225b3,
 		0xd52277af4a9defbf,
 		0xda5279fc7be4434e,
 		0xe2bab90824c7835f,
-		0xed52e5bef76b7c45)
+		0xed52e5bef76b7c45,
+		0xf0417b79c793c63a)
 }

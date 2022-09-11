@@ -35,3 +35,12 @@ interface EchoService {
   stats @2 () -> (stats: EchoStats);
   # return the statistics of echo
 }
+
+interface EchoBootstrap {
+# Bootstrap to get a hold of the echo service. Intended to test security through 'capabilities' concept.
+    
+    getEcho @0 () -> (service :EchoService);
+    # Obtain the capability to Echo
+
+}
+

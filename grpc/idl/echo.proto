@@ -25,3 +25,4 @@ service EchoService {
   rpc stats(google.protobuf.Empty) returns (EchoStats);
 
 }
+

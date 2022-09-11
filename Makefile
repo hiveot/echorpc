@@ -16,6 +16,9 @@ setup: .FORCE ## Go Get grpc and capnp modules needed for building
 	go get google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 
 
+echoboot: .FORCE ## run the echoboot app
+	go run pkg/echoboot/main.go
+
 capnp: .FORCE  ## generate the capnp based service
 	$(CAPNP_GO)  ./capnp/idl/echo.capnp
 	go mod tidy

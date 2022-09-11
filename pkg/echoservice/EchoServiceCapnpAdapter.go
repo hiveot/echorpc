@@ -13,9 +13,8 @@ import (
 	echocap "github.com/hiveot/echorpc/capnp/go"
 )
 
-// EchoServiceCapnpAdapter cap'n'proto adapter for echo service
 // EchoServiceCapnpAdapter implements the generated echocap.EchoService_Server
-// interface. Copy the interface method when building the adapter.
+// interface.
 type EchoServiceCapnpAdapter struct {
 	svc *EchoService
 }
@@ -24,7 +23,13 @@ func (adapter *EchoServiceCapnpAdapter) Echo(
 	_ context.Context, call echocap.EchoService_echo) error {
 	text, _ := call.Args().Text()
 	echoText, err := adapter.svc.Echo(text)
-	res, _ := call.AllocResults()
+	if err != nil {
+		return err
+	}
+	res, err := call.AllocResults()
+	if err != nil {
+		return err
+	}
 	err = res.SetEchoText(echoText)
 	return err
 }
@@ -33,7 +38,13 @@ func (adapter *EchoServiceCapnpAdapter) Echo(
 func (adapter *EchoServiceCapnpAdapter) Latest(
 	_ context.Context, call echocap.EchoService_latest) error {
 	latestText, err := adapter.svc.Latest()
-	res, _ := call.AllocResults()
+	if err != nil {
+		return err
+	}
+	res, err := call.AllocResults()
+	if err != nil {
+		return err
+	}
 	err = res.SetEchoText(latestText)
 	return err
 }
@@ -43,7 +54,13 @@ func (adapter *EchoServiceCapnpAdapter) Stats(
 	latestText, echoCount := adapter.svc.Stats()
 
 	res, err := call.AllocResults()
+	if err != nil {
+		return err
+	}
 	stats, err := res.NewStats()
+	if err != nil {
+		return err
+	}
 
 	err = stats.SetLatest(latestText)
 	stats.SetCount(uint32(echoCount))
